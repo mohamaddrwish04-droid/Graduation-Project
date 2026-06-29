@@ -18,7 +18,7 @@ function PageHeader({ title, subtitle }) {
         fontWeight="500"
         sx={{
           mb: 1,
-          color: "#FFFFFF",
+          color: "text.primary",
           letterSpacing: "0.5px",
         }}
       >
@@ -28,7 +28,7 @@ function PageHeader({ title, subtitle }) {
       <Typography
         variant="body1"
         sx={{
-          color: "rgba(255,255,255,0.65)",
+          color: "text.primary",
           maxWidth: "700px",
           lineHeight: 1.8,
         }}

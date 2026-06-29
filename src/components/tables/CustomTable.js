@@ -8,6 +8,7 @@ import {
     Paper,
     Box,
     Typography,
+    Rating,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -30,17 +31,12 @@ function CustomTable({
         >
             <Table>
                 <TableHead>
-                    <TableRow
-                        sx={{
-                            backgroundColor: "#141726",
-                        }}
-                    >
+                    <TableRow>
                         {columns.map((column) => (
                             <TableCell
                                 key={column.field}
                                 align="center"
                                 sx={{
-                                    color: "#FFFFFF",
                                     fontWeight: "bold",
                                     borderBottom: "1px solid rgba(255,255,255,0.08)",
                                 }}
@@ -53,7 +49,6 @@ function CustomTable({
                             <TableCell
                                 align="center"
                                 sx={{
-                                    color: "#FFFFFF",
                                     fontWeight: "bold",
                                 }}
                             >
@@ -82,10 +77,8 @@ function CustomTable({
                                 hover
                                 sx={{
                                     transition: "0.25s",
-
                                     "&:hover": {
-                                        backgroundColor:
-                                            "rgba(47,107,255,0.08)",
+                                        backgroundColor:"rgba(47, 106, 255, 0.88)",
                                     },
                                 }}
                             >
@@ -100,7 +93,10 @@ function CustomTable({
                                                     ? (<CheckCircleIcon color="success" fontSize="small"/>)
                                                     : (<CancelIcon color="error" fontSize="small"/>)
 
-                                                : column.field === "createdAt"
+                                                :column.field ==="ratingValue"
+                                                ?(<Rating value={row.ratingValue} readOnly precision={0.5}/>)
+
+                                                : column.field === "createdAt" || column.field === "ratingcreatedAt"
                                                     ? new Date(
                                                         row.createdAt
                                                     ).toLocaleString(
@@ -119,7 +115,6 @@ function CustomTable({
 
                                         : column.field === "durationInDays"
                                         ? `${row.durationInDays} يوم`
-
                                         : row[column.field]
     }
                                     </TableCell>

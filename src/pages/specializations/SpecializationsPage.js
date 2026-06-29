@@ -127,18 +127,7 @@ function SpecializationsPage() {
                 variant="contained"
                 size="small"
                 startIcon={<EditIcon />}
-                sx={{
-                    textTransform: "none",
-                    borderRadius: "10px",
-                    background:
-                        "linear-gradient(135deg,#2F6BFF,#4D7CFE)",
-                    boxShadow:
-                        "0 6px 18px rgba(47,107,255,0.25)",
 
-                    "&:hover": {
-                        transform: "translateY(-2px)",
-                    },
-                }}
                 onClick={() => handleEdit(row)}
             >
                 تعديل

@@ -1,46 +1,67 @@
-import Grid from "@mui/material/Grid";
-import PeopleIcon from "@mui/icons-material/People";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import PaymentIcon from "@mui/icons-material/Payment";
-import StarIcon from "@mui/icons-material/Star";
+import { useEffect, useState } from "react";
+import { getDashboardSummary } from "../../services/dashboardService";
+import SummaryCardsRow from "../../components/dashboard/SummaryCardsRow";
+import OrdersStatusChart from "../../components/dashboard/OrdersStatusChart";
+import UsersProvidersChart from "../../components/dashboard/UsersProvidersChart";
+import SystemStatusCard from "../../components/dashboard/SystemStatusCard";
+import QuickActions from "../../components/dashboard/QuickActions";
+import PageHeader from "../../components/common/PageHeader";
+import { Grid } from "@mui/material";
 
-import StatCard from "../../components/cards/StatCard";
+
+
 
 function DashboardHome() {
+    const [summary, setSummary] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadDashboard();
+    }, []);
+
+    const loadDashboard = async () => {
+        try {
+            setLoading(true);
+
+            const data = await getDashboardSummary();
+
+            setSummary(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     return (
-        <Grid container spacing={3}>
-            <Grid size={3}>
-                <StatCard
-                    title="إجمالي المستخدمين"
-                    value="1,250"
-                    icon={<PeopleIcon />}
-                />
-            </Grid>
+        <>
+            <PageHeader
+                title="لوحة التحكم الرئيسية"
+                subtitle="نظرة شاملة على مؤشرات النظام وإحصائيات المنصة مع وصول سريع إلى أهم العمليات الإدارية."
+            />
+            <SummaryCardsRow summary={summary} />
 
-            <Grid size={3}>
-                <StatCard
-                    title="إجمالي الطلبات"
-                    value="487"
-                    icon={<ReceiptIcon />}
-                />
-            </Grid>
+            <Grid container spacing={3}>
+                <Grid size={{ xs: 12, lg: 6 }}>
+                    <OrdersStatusChart summary={summary} />
+                </Grid>
 
-            <Grid size={3}>
-                <StatCard
-                    title="الاشتراكات النشطة"
-                    value="92"
-                    icon={<PaymentIcon />}
+                <Grid size={{ xs: 12, lg: 6 }}>
+                    <UsersProvidersChart summary={summary} />
+                </Grid>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+                <SystemStatusCard
+                    summary={summary}
                 />
             </Grid>
-
-            <Grid size={3}>
-                <StatCard
-                    title="متوسط التقييم"
-                    value="4.8"
-                    icon={<StarIcon />}
-                />
+            <Grid container spacing={3}>
+                <Grid size={12}>
+                    <QuickActions />
+                </Grid>
             </Grid>
-        </Grid>
+        </>
     );
 }
 

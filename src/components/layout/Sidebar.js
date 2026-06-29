@@ -123,7 +123,7 @@ function Sidebar() {
                         sx={{
                             borderRadius: "12px",
                             mb: 0.5,
-                            color: "#fff",
+                            color: "text.primary",
                             "&.active": {
                                 backgroundColor: "rgba(47,107,255,0.18)",
                                 border: "1px solid rgba(47,107,255,0.25)",

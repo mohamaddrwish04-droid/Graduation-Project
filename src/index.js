@@ -8,20 +8,23 @@ import { CacheProvider } from "@emotion/react";
 
 import theme from "./styles/muiTheme";
 import rtlCache from "./styles/rtlCache";
+import {
+    CustomThemeProvider,
+} from "./context/ThemeContext";
 
 import { AuthProvider } from "./context/AuthContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <CacheProvider value={rtlCache}>
-      <ThemeProvider theme={theme}>
+      <CustomThemeProvider>
         <CssBaseline />
 
         <AuthProvider>
           <App />
         </AuthProvider>
 
-      </ThemeProvider>
+      </CustomThemeProvider>
     </CacheProvider>
   </React.StrictMode>
 );

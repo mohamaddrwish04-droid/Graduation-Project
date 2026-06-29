@@ -7,7 +7,7 @@ function StatCard({ title, value, icon }) {
         <Card
             sx={{
                 height: 120,
-                background:"linear-gradient(135deg, rgba(26,29,46,1) 0%, rgba(20,23,38,1) 100%)",
+                background:"MuiCard.styleOverrides",
                 border: "1px solid rgba(255,255,255,0.05)",
                 boxShadow: "0 8px 25px rgba(47,107,255,0.12)",
                 transition: "all 0.3s ease",

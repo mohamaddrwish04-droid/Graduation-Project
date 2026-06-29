@@ -20,24 +20,6 @@ function SearchInput({
                     </InputAdornment>
                 ),
             }}
-            sx={{
-                "& .MuiOutlinedInput-root": {
-                    backgroundColor: "#1A1D2E",
-                    borderRadius: "12px",
-
-                    "& fieldset": {
-                        borderColor: "rgba(255,255,255,0.08)",
-                    },
-
-                    "&:hover fieldset": {
-                        borderColor: "#2F6BFF",
-                    },
-
-                    "&.Mui-focused fieldset": {
-                        borderColor: "#2F6BFF",
-                    },
-                },
-            }}
         />
     );
 }

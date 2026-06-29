@@ -123,13 +123,8 @@ function OrdersPage() {
                     setSelectedOrder(row);
                     setOpenDialog(true);
                 }}
-                sx={{
-                    background:"linear-gradient(135deg,#2F6BFF,#4D7CFE)",
-                    borderRadius: "10px",
-                    textTransform: "none",
-                    boxShadow:"0 6px 18px rgba(47,107,255,0.25)","&:hover": {
-                    transform:"translateY(-2px)",
-                    },}} >
+
+            >
                 عرض
             </Button>
             <Button
@@ -137,12 +132,14 @@ function OrdersPage() {
                 variant="contained"
                 size="small"
                 sx={{
-                    background:"linear-gradient(135deg,#10B981,#34D399)",
+                    background: "linear-gradient(135deg,#10B981,#34D399)",
                     borderRadius: "10px",
                     textTransform: "none",
-                    boxShadow:"0 6px 18px rgba(16,185,129,0.25)",
-                    "&:hover": {transform:"translateY(-2px)",
-                    }, }}>
+                    boxShadow: "0 6px 18px rgba(16,185,129,0.25)",
+                    "&:hover": {
+                        transform: "translateY(-2px)",
+                    },
+                }}>
                 العروض
             </Button>
         </Box>

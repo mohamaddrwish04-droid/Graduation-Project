@@ -1,112 +1,163 @@
-import { Box, Button, Rating } from "@mui/material";
+import { Box, } from "@mui/material";
 
 import StarRateIcon from "@mui/icons-material/StarRate";
 import GradeIcon from "@mui/icons-material/Grade";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-
 import PageHeader from "../../components/common/PageHeader";
 import StatCard from "../../components/cards/StatCard";
 import SearchInput from "../../components/common/SearchInput";
 import FilterSelect from "../../components/common/FilterSelect";
 import CustomTable from "../../components/tables/CustomTable";
+import { getOrders } from "../../services/orderService";
+import { useState, useEffect } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { getSpecializations } from "../../services/specializationService";
 
 function RatingsPage() {
-    const ratings = [
-        {
-            id: "#R001",
-            customer: "أحمد محمد",
-            provider: "خالد علي",
-            rating: <Rating value={5} readOnly />,
-            comment: "خدمة ممتازة وسريعة.",
-            createdAt: "2026-05-20",
-        },
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        severity: "success",
+        message: "",
+    });
+    const [orders, setorders] = useState([]);
+    const [specializationFilter, setspecializationsFilter] = useState("all");
+    const [specializations, setSpecializations] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchText, setSearchText] = useState("");
+    const [ratingFilter, setRatingFilter] = useState("all");
 
-        {
-            id: "#R002",
-            customer: "سارة أحمد",
-            provider: "محمد حسن",
-            rating: <Rating value={4} readOnly />,
-            comment: "جيد جداً والتعامل محترم.",
-            createdAt: "2026-05-21",
-        },
 
-        {
-            id: "#R003",
-            customer: "عمر خالد",
-            provider: "أحمد محمود",
-            rating: <Rating value={3} readOnly />,
-            comment: "الخدمة جيدة لكن تأخر بالحضور.",
-            createdAt: "2026-05-22",
-        },
 
-        {
-            id: "#R004",
-            customer: "لينا يوسف",
-            provider: "علي سعيد",
-            rating: <Rating value={1} readOnly />,
-            comment: "لم يتم حل المشكلة.",
-            createdAt: "2026-05-23",
-        },
-    ];
 
+    const ratedOrders = orders.filter((o) => o.hasRating);
+
+    const tableRows = ratedOrders.filter((order) => {
+        const search = searchText.toLowerCase();
+        const matchesSearch =
+            order.customerName
+                .toLowerCase()
+                .includes(search) ||
+            order.selectedProviderName
+                .toLowerCase()
+                .includes(search);
+
+        const matchesSpecialization =
+            specializationFilter === "all" ||
+            order.specializationId ===
+            Number(specializationFilter);
+
+        const matchesRating =
+            ratingFilter === "all" ||
+            order.ratingValue === Number(ratingFilter);
+
+        return (
+            matchesSearch &&
+            matchesSpecialization &&
+            matchesRating
+        );
+    })
+        .map((order) => ({
+            id: order.id,
+            customerName: order.customerName,
+            providerName:
+                order.selectedProviderName,
+            specializationName:
+                order.specializationName,
+            ratingValue: order.ratingValue,
+            ratingCreatedAt:
+                order.ratingCreatedAt,
+        }));
     const columns = [
         {
             field: "id",
             header: "رقم التقييم",
         },
         {
-            field: "customer",
+            field: "customerName",
             header: "العميل",
         },
         {
-            field: "provider",
+            field: "providerName",
             header: "مقدم الخدمة",
         },
         {
-            field: "rating",
+            field: "specializtionName",
+            header: "التخصص",
+        },
+        {
+            field: "ratingValue",
             header: "التقييم",
         },
         {
-            field: "comment",
-            header: "التعليق",
-        },
-        {
-            field: "createdAt",
+            field: "ratingcreatedAt",
             header: "تاريخ التقييم",
         },
     ];
 
-    const tableActions = () => (
-        <Button
-            startIcon={<VisibilityIcon />}
-            variant="contained"
-            size="small"
-            sx={{
-                background:
-                    "linear-gradient(135deg,#2F6BFF,#4D7CFE)",
+    useEffect(() => {
+        loadorders();
+        loadSpecializations();
+    }, []);
 
-                borderRadius: "10px",
+    const loadorders = async () => {
+        try {
+            setLoading(true);
+            const data = await getOrders();
+            setorders(data);
+        } catch {
+            setSnackbar({
+                open: true,
+                severity: "error",
+                message:
+                    "فشل تحميل الخطط",
+            });
+        }finally{
+            setLoading(false);
+        }
+    };
+    const loadSpecializations = async () => {
+        try {
+            setLoading(true);
+            const data = await getSpecializations();
+            setSpecializations(data);
+        } catch {
+            setSnackbar({
+                open: true,
+                severity: "error",
+                message: "فشل تحميل التخصصات",
+            });
+        }finally{
+            setLoading(false);
+        }
+    };
+    const totalRatings = ratedOrders.length;
 
-                textTransform: "none",
+    const averageRating =
+        ratedOrders.length > 0
+            ? (
+                ratedOrders.reduce(
+                    (sum, order) =>
+                        sum +
+                        order.ratingValue,
+                    0
+                ) /
+                ratedOrders.length
+            ).toFixed(1)
+            : 0;
 
-                boxShadow:
-                    "0 6px 18px rgba(47,107,255,0.25)",
+    const fiveStars =
+        ratedOrders.filter(
+            (order) =>
+                order.ratingValue === 5
+        ).length;
 
-                transition: "0.3s",
-
-                "&:hover": {
-                    transform: "translateY(-2px)",
-
-                    boxShadow:
-                        "0 10px 24px rgba(47,107,255,0.4)",
-                },
-            }}
-        >
-            عرض
-        </Button>
-    );
+    const lowRatings =
+        ratedOrders.filter(
+            (order) =>
+                order.ratingValue < 5
+        ).length;
 
     return (
         <>
@@ -125,25 +176,25 @@ function RatingsPage() {
             >
                 <StatCard
                     title="إجمالي التقييمات"
-                    value="850"
+                    value={totalRatings}
                     icon={<StarRateIcon />}
                 />
 
                 <StatCard
                     title="متوسط التقييم"
-                    value="4.7"
+                    value={averageRating}
                     icon={<GradeIcon />}
                 />
 
                 <StatCard
                     title="5 نجوم"
-                    value="620"
+                    value={fiveStars}
                     icon={<ThumbUpAltIcon />}
                 />
 
                 <StatCard
                     title="تقييمات منخفضة"
-                    value="35"
+                    value={lowRatings}
                     icon={<WarningAmberIcon />}
                 />
             </Box>
@@ -156,12 +207,21 @@ function RatingsPage() {
                 }}
             >
                 <Box sx={{ flex: 1 }}>
-                    <SearchInput placeholder="ابحث عن تقييم..." />
+                    <SearchInput placeholder="ابحث عن تقييم..."
+                        value={searchText}
+                        onChange={(e) => {
+                            setSearchText(e.target.value);
+                        }}
+                    />
                 </Box>
 
                 <Box sx={{ width: 220 }}>
                     <FilterSelect
                         label="التقييم"
+                        value={ratingFilter}
+                        onChange={(e) => {
+                            setRatingFilter(e.target.value);
+                        }}
                         options={[
                             {
                                 value: "all",
@@ -193,23 +253,20 @@ function RatingsPage() {
                 <Box sx={{ width: 220 }}>
                     <FilterSelect
                         label="التخصص"
+                        value={specializationFilter}
+                        onChange={(e) =>
+                            setspecializationsFilter(e.target.value)
+                        }
                         options={[
                             {
                                 value: "all",
-                                label: "كل التخصصات",
+                                label: "الكل",
                             },
-                            {
-                                value: "electricity",
-                                label: "كهرباء",
-                            },
-                            {
-                                value: "plumbing",
-                                label: "سباكة",
-                            },
-                            {
-                                value: "ac",
-                                label: "تكييف",
-                            },
+
+                            ...specializations.map((sp) => ({
+                                value: sp.id,
+                                label: sp.name,
+                            })),
                         ]}
                     />
                 </Box>
@@ -217,9 +274,28 @@ function RatingsPage() {
 
             <CustomTable
                 columns={columns}
-                rows={ratings}
-                actions={tableActions}
+                rows={tableRows}
             />
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={3000}
+                onClose={() =>
+                    setSnackbar({
+                        ...snackbar,
+                        open: false,
+                    })
+                }
+            >
+                <Alert
+                    severity={
+                        snackbar.severity
+                    }
+                    variant="filled"
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </>
     );
 }
