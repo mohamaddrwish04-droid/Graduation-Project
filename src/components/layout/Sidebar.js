@@ -20,57 +20,65 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import StarIcon from "@mui/icons-material/Star";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
+import { useLanguage } from "../../context/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 260;
 
 const navItems = [
     {
-        text: "اللوحة الرئيسية",
+        text: "page home",
         path: "/dashboard",
         icon: <DashboardIcon />,
     },
     {
-        text: "المستخدمين",
+        text: "users",
         path: "/users",
         icon: <PeopleIcon />,
     },
     {
-        text: "التخصصات",
+        text: "specializations",
         path: "/specializations",
         icon: <CategoryIcon />,
     },
     {
-        text: "الطلبات",
+        text: "orders",
         path: "/orders",
         icon: <ReceiptIcon />,
     },
     {
-        text: "الاشتراكات",
+        text: "subscriptions",
         path: "/subscriptions",
         icon: <PaymentIcon />,
     },
     {
-        text: "خطط الاشتراكات",
+        text: "subscription-plans",
         path: "/subscription-plans",
         icon: <ClearAllIcon />,
     },
     {
-        text: "التقييمات",
+        text: "ratings",
         path: "/ratings",
         icon: <StarIcon />,
     },
     {
-        text: "الإعدادات",
+        text: "settings",
         path: "/settings",
         icon: <SettingsIcon />,
     },
 ];
 
 function Sidebar() {
+    const { direction } = useLanguage();
+    const { t } = useTranslation();
+
+
+
+
     return (
         <Drawer
             variant="permanent"
-            anchor="left"
+            anchor={direction === "rtl" ? "left" : "right"}
             sx={{
                 width: drawerWidth,
                 flexShrink: 0,
@@ -80,29 +88,13 @@ function Sidebar() {
                     p: 2,
                 },
             }}>
-            <Toolbar
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1.5,
-                    borderBottom:
-                        "1px solid rgba(255,255,255,0.08)",
-                }}
-            >
+            <Toolbar id="sidebar-toolbar">
                 <Box
                     component="img"
                     src={"/logo.png"}
                     alt="logo"
-                    sx={{
-                        width: 60,
-                        height: 60,
-                        objectFit: "contain",
-
-                        filter:
-                            "drop-shadow(0 0 12px rgba(47,107,255,.35))",
-                    }}
+                    id = "sidebar-logo"
                 />
-
                 <Box>
 
 
@@ -114,6 +106,7 @@ function Sidebar() {
                     </Typography>
                 </Box>
             </Toolbar>
+
             <List>
                 {navItems.map((item) => (
                     <ListItemButton
@@ -142,7 +135,7 @@ function Sidebar() {
                             }} >
                             {item.icon}
                         </ListItemIcon>
-                        <ListItemText primary={item.text} />
+                        <ListItemText primary={t(item.text)} />
                     </ListItemButton>
                 ))}
             </List>

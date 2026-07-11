@@ -17,6 +17,7 @@ import { useState, useEffect } from "react";
 
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { useTranslation } from "react-i18next";
 
 import {
     getSpecializations,
@@ -27,7 +28,7 @@ import {
 } from "../../services/specializationService";
 
 function SpecializationsPage() {
-
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
     const [specializations, setSpecializations] = useState([]);
@@ -78,19 +79,19 @@ function SpecializationsPage() {
     const columns = [
         {
             field: "name",
-            header: "اسم التخصص",
+            header: t("name"),
         },
         {
             field: "description",
-            header: "الوصف",
+            header: t("description"),
         },
         {
             field: "isActive",
-            header: "الحالة",
+            header: t("status"),
         },
         {
             field: "createdAt",
-            header: "تاريخ الإنشاء",
+            header: t("created at"),
         },
     ];
     const handleToggleStatus = async (row) => {
@@ -215,8 +216,8 @@ function SpecializationsPage() {
     return (
         <>
             <PageHeader
-                title="إدارة التخصصات"
-                subtitle="إدارة تخصصات الصيانة المتاحة والتحكم بحالتها."
+                title={t("manage specializations")}
+                subtitle={t("disc-specializations")}
             />
 
             <Box
@@ -228,13 +229,13 @@ function SpecializationsPage() {
                 }}
             >
                 <StatCard
-                    title="إجمالي التخصصات"
+                    title={t("all specializations")}
                     value={specializations.length}
                     icon={<CategoryIcon />}
                 />
 
                 <StatCard
-                    title="التخصصات النشطة"
+                    title={t("active specializations")}
                     value={specializations.filter(
                         (s) => s.isActive
                     ).length}
@@ -242,7 +243,7 @@ function SpecializationsPage() {
                 />
 
                 <StatCard
-                    title="التخصصات المعطلة"
+                    title={t("inactive specializations")}
                     value={specializations.filter(
                         (s) => !s.isActive
                     ).length}

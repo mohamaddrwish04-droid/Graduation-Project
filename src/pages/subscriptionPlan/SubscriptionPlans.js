@@ -26,8 +26,10 @@ import {
   activateSubscriptionPlan,
   deactivateSubscriptionPlan,
 } from "../../services/subscriptionPlanService";
+import { useTranslation } from "react-i18next";
 
 function SubscriptionsPage() {
+  const { t } = useTranslation();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -154,23 +156,23 @@ function SubscriptionsPage() {
   const columns = [
     {
       field: "name",
-      header: "اسم التخصص",
+      header: t("specialization"),
     },
     {
       field: "price",
-      header: "السعر",
+      header: t("amount"),
     },
     {
       field: "durationInDays",
-      header: "المدة",
+      header: t("duration"),
     },
     {
       field: "isActive",
-      header: "الحالة",
+      header: t("status"),
     },
     {
       field: "createdAt",
-      header: "تاريخ الإنشاء",
+      header: t("created at"),
     },
   ];
   const tableActions = (row) => (
@@ -197,7 +199,7 @@ function SubscriptionsPage() {
           },
         }}
       >
-        تعديل
+        {t("edit")}
       </Button>
       <Switch
         defaultChecked={row.status === "نشط"}
@@ -263,8 +265,8 @@ function SubscriptionsPage() {
   return (
     <>
       <PageHeader
-        title="إدارة خطط الاشتراك"
-        subtitle="إدارة الخطط المتاحة والتحكم بحالة التفعيل."
+        title={t("manage specializations-plans")}
+        subtitle={t("disc-specializations-plans")}
       />
       <Box
         sx={{
@@ -275,24 +277,24 @@ function SubscriptionsPage() {
         }}
       >
         <StatCard
-          title="إجمالي الخطط"
+          title={t("plans")}
           value={totalPlans}
           icon={<WorkspacePremiumIcon />}
         />
 
         <StatCard
-          title="الخطط المعطلة"
+          title={t("active specializations")}
           value={activePlans}
           icon={<CheckCircleIcon />}
         />
         <StatCard
-          title="الخطط المعطلة"
+          title={t("inactive specializations")}
           value={inactivePlans}
           icon={<BlockIcon />}
         />
 
         <StatCard
-          title="متوسط السعر"
+          title={t("average price")}
           value={averagePrice}
           icon={<AttachMoneyIcon />}
         />
@@ -355,7 +357,7 @@ function SubscriptionsPage() {
             },
           }}
         >
-          إضافة تخصص
+          {t("add new plan")}
         </Button>
       </Box>
 

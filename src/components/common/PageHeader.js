@@ -31,6 +31,7 @@ function PageHeader({ title, subtitle }) {
           color: "text.primary",
           maxWidth: "700px",
           lineHeight: 1.8,
+          textAlign: "center",
         }}
       >
         {subtitle}

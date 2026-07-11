@@ -25,6 +25,7 @@ import {
 } from "../../services/subscriptionService";
 import {getSubscriptionPlans} from "../../services/subscriptionPlanService";
 import Typography from '@mui/material/Typography';
+import { useTranslation } from "react-i18next";
 
 export default function SubscriptionPage() {
     const [requests, setRequests] = useState([]);
@@ -50,35 +51,36 @@ export default function SubscriptionPage() {
         x => x.status === 2
     ).length;
     const [plans, setPlans] = useState([]);
+    const { t } = useTranslation();
 
     const columns = [
         {
             field: "providerName",
-            header: "مقدم الخدمة",
+            header: t("providers"),
         },
         {
             field: "reviewedByAdminName",
-            header: "مقدم الخدمة",
+            header: t("reviewed by admin"),
         },
         {
             field: "planName",
-            header: "الخطة",
+            header: t("plans"),
         },
         {
             field: "amount",
-            header: "المبلغ",
+            header: t("amount"),
         },
         {
             field: "paymentMethod",
-            header: "طريقة الدفع",
+            header: t("payment method"),
         },
         {
             field: "status",
-            header: "الحالة",
+            header: t("status"),
         },
         {
             field: "createdAt",
-            header: "تاريخ الطلب",
+            header: t("created at"),
         },
     ];
     useEffect(() => {
@@ -288,8 +290,8 @@ export default function SubscriptionPage() {
     return (
         <>
             <PageHeader
-                title=" إدراة طلبات الاشتراك"
-                subtitle="إدراة طلبات الاشتراك المتاحة و إدارة حالتها"
+                title={t("manage subscription requests")}
+                subtitle={t("disc-subscription-requests")}
             />
             <Box
                 sx={{
@@ -300,24 +302,24 @@ export default function SubscriptionPage() {
                 }}
             >
                 <StatCard
-                    title=" اجمالي الطلبات"
+                    title={t("all orders")}
                     value={totalRequests}
                     icon={<RequestQuoteIcon />}
                 />
 
                 <StatCard
-                    title=" طلبات قيد الانتظار"
+                    title={t("orders pending")}
                     value={pendingRequests}
                     icon={<PendingIcon />}
                 />
 
                 <StatCard
-                    title=" الطلبات المقبولة"
+                    title={t("approved")}
                     value={approvedRequests}
                     icon={<ThumbUpIcon />}
                 />
                 <StatCard
-                    title=" الطلبات المرفوضة"
+                    title={t("rejected")}
                     value={rejectedRequests}
                     icon={<ThumbDownIcon />}
                 />

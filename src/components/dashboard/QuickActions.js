@@ -11,42 +11,44 @@ import HandymanIcon from "@mui/icons-material/Handyman";
 import CategoryIcon from "@mui/icons-material/Category";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
-
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+
 export default function QuickActions() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const actions = [
         {
-            title: "المستخدمون",
+            title: t("all users"),
             icon: <PeopleIcon />,
             path: "/users",
         },
         {
-            title: "الطلبات",
+            title: t("orders"),
             icon: <AssignmentIcon />,
             path: "/orders",
         },
         {
-            title: "مقدمو الخدمة",
+            title: t("ratings"),
             icon: <HandymanIcon />,
-            path: "/providers",
+            path: "/ratings",
         },
         {
-            title: "التخصصات",
+            title: t("specializations"),
             icon: <CategoryIcon />,
             path: "/specializations",
         },
         {
-            title: "خطط الاشتراك",
+            title: t("subscription-plans"),
             icon: <WorkspacePremiumIcon />,
             path: "/subscriptions",
         },
         {
-            title: "طلبات الاشتراك",
+            title: t("subscriptions"),
             icon: <RequestQuoteIcon />,
-            path: "/subscription-requests",
+            path: "/subscriptions",
         },
     ];
 
@@ -58,7 +60,7 @@ export default function QuickActions() {
                 fontWeight="bold"
                 mb={3}
             >
-                إجراءات سريعة
+                {t("Quick actions")}
             </Typography>
 
             <Grid container spacing={2}>

@@ -19,44 +19,20 @@ import { Grid } from "@mui/material";
 import { Box } from "@mui/system";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 
-const columns = [
-    {
-        field: "fullName",
-        header: "الاسم",
-    },
-    {
-        field: "email",
-        header: "البريد الإلكتروني",
-    },
-    {
-        field: "phoneNumber",
-        header: "رقم الهاتف",
-    },
-    {
-        field: "status",
-        header: "الحالة",
-    },
-    {
-        field: "createdAt",
-        header: "تاريخ التسجيل",
-    },
-];
 
 
 
 export default function UsersPage() {
+
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const { t } = useTranslation();
     const [search, setSearch] = useState("");
-
-    const [roleFilter, setRoleFilter] =
-        useState("all");
-
-    const [statusFilter, setStatusFilter] =
-        useState("all");
+    const [roleFilter, setRoleFilter] = useState("all");
+    const [statusFilter, setStatusFilter] = useState("all");
     const [open, setOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
 
@@ -154,17 +130,39 @@ export default function UsersPage() {
                 : (<CancelIcon color="error" fontSize="small" />)
         })
     );
+    const columns = [
+    {
+        field: "fullName",
+        header: t("name"),
+    },
+    {
+        field: "email",
+        header: t("email"),
+    },
+    {
+        field: "phoneNumber",
+        header: t("phone"),
+    },
+    {
+        field: "isEmailVerified",
+        header: t("status"),
+    },
+    {
+        field: "createdAt",
+        header: t("created at"),
+    },
+];
 
     return (
         <div>
             <PageHeader
-                title="إدارة المستخدمين"
-                subtitle="عرض وإدارة جميع المستخدمين المسجلين في النظام ومتابعة حالة الحسابات الخاصة بهم."
+                title={t("manage users")}
+                subtitle={t("disc-users")}
             />
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 <Grid size={4}>
                     <StatCard
-                        title="إجمالي المستخدمين"
+                        title={t("all users")}
                         value={totalUsers}
                         icon={<PeopleIcon />}
                     />
@@ -172,7 +170,7 @@ export default function UsersPage() {
 
                 <Grid size={4}>
                     <StatCard
-                        title="العملاء"
+                        title={t("customers")}
                         value={customers}
                         icon={<PersonIcon />}
                     />
@@ -180,7 +178,7 @@ export default function UsersPage() {
 
                 <Grid size={4}>
                     <StatCard
-                        title="مقدمو الخدمة"
+                        title={t("providers")}
                         value={providers}
                         icon={<HandymanIcon />}
                     />
@@ -226,7 +224,7 @@ export default function UsersPage() {
             </Box>
             <CustomTable
                 columns={columns}
-                rows={formattedUsers}
+                rows={filteredUsers}
                 actions={(row) => (
                     row.provider && (
                         <Button
@@ -237,7 +235,7 @@ export default function UsersPage() {
                                 handleViewDetails(row)
                             }
                         >
-                            تفاصيل مقدم الخدمة
+                           {t("view details")}
                         </Button>
                     )
                 )}

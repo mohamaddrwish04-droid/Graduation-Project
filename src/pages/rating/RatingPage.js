@@ -14,6 +14,8 @@ import { useState, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { getSpecializations } from "../../services/specializationService";
+import { useTranslation } from "react-i18next";
+import { combine } from "stylis";
 
 function RatingsPage() {
     const [snackbar, setSnackbar] = useState({
@@ -27,6 +29,7 @@ function RatingsPage() {
     const [loading, setLoading] = useState(true);
     const [searchText, setSearchText] = useState("");
     const [ratingFilter, setRatingFilter] = useState("all");
+    const { t } = useTranslation();
 
 
 
@@ -72,27 +75,27 @@ function RatingsPage() {
     const columns = [
         {
             field: "id",
-            header: "رقم التقييم",
+            header: t("ID"),
         },
         {
             field: "customerName",
-            header: "العميل",
+            header: t("customer"),
         },
         {
             field: "providerName",
-            header: "مقدم الخدمة",
+            header: t("provider"),
         },
         {
             field: "specializtionName",
-            header: "التخصص",
+            header: t("specialization"),
         },
         {
             field: "ratingValue",
-            header: "التقييم",
+            header: t("rating"),
         },
         {
             field: "ratingcreatedAt",
-            header: "تاريخ التقييم",
+            header: t("rating date"),
         },
     ];
 
@@ -162,8 +165,8 @@ function RatingsPage() {
     return (
         <>
             <PageHeader
-                title="إدارة التقييمات"
-                subtitle="متابعة تقييمات العملاء وتحليل جودة الخدمات المقدمة."
+                title={t("manage ratings")}
+                subtitle={t("disc-ratings")}
             />
 
             <Box
@@ -175,25 +178,25 @@ function RatingsPage() {
                 }}
             >
                 <StatCard
-                    title="إجمالي التقييمات"
+                    title={t("all ratings")}
                     value={totalRatings}
                     icon={<StarRateIcon />}
                 />
 
                 <StatCard
-                    title="متوسط التقييم"
+                    title={t("average rating")}
                     value={averageRating}
                     icon={<GradeIcon />}
                 />
 
                 <StatCard
-                    title="5 نجوم"
+                    title={t("five stars")} 
                     value={fiveStars}
                     icon={<ThumbUpAltIcon />}
                 />
 
                 <StatCard
-                    title="تقييمات منخفضة"
+                    title={t("low ratings")}
                     value={lowRatings}
                     icon={<WarningAmberIcon />}
                 />

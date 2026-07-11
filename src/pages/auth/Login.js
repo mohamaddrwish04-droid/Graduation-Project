@@ -36,7 +36,7 @@ function Login() {
         try {
             e.preventDefault();
             setLoading(true);
-            const user = await loginRequest( email, password);
+            const user = await loginRequest(email, password);
             const decoded = jwtDecode(
                 user.accessToken
             );
@@ -201,66 +201,53 @@ function Login() {
                         fullWidth
                         label="البريد الإلكتروني"
                         value={email}
-                        onChange={(e) => setEmail( e.target.value)}
+                        onChange={(e) => setEmail(e.target.value)}
                         sx={{
-                            mb: 3,"& .MuiOutlinedInput-root":
-                            {
+                            mb: 3,
+                            "& .MuiOutlinedInput-root": {
                                 borderRadius: "14px",
                             },
                         }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <EmailIcon color="primary" />
-                                </InputAdornment>
-                            ),
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <EmailIcon color="primary" />
+                                    </InputAdornment>
+                                ),
+                            },
                         }}
                     />
 
                     <TextField
                         fullWidth
                         label="كلمة المرور"
-                        type={
-                            showPassword ? "text" : "password"
-                        }
+                        type={showPassword ? "text" : "password"}
                         value={password}
-                        onChange={(e) =>
-                            setPassword(
-                                e.target.value
-                            )
-                        }
+                        onChange={(e) => setPassword(e.target.value)}
                         sx={{
                             mb: 2,
-                            "& .MuiOutlinedInput-root":
-                            {
-                                borderRadius:
-                                    "14px",
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: "14px",
                             },
                         }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <LockIcon color="primary" />
-                                </InputAdornment>
-                            ),
-
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={() =>
-                                            setShowPassword(
-                                                !showPassword
-                                            )
-                                        }
-                                    >
-                                        {showPassword ? (
-                                            <VisibilityOff />
-                                        ) : (
-                                            <Visibility />
-                                        )}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <LockIcon color="primary" />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            },
                         }}
                     />
 
@@ -289,19 +276,6 @@ function Login() {
                         variant="contained"
                         onClick={handleLogin}
                         disabled={loading}
-                        sx={{
-                            height: 58,
-                            borderRadius: "14px",
-                            fontWeight: 700,
-                            fontSize: 16,
-                            background: "linear-gradient(135deg,#2F6BFF,#6C63FF)",
-                            boxShadow: "0 10px 25px rgba(47,107,255,.35)",
-                            transition: ".3s",
-                            "&:hover": {
-                                transform: "translateY(-2px)",
-                                boxShadow: "0 15px 35px rgba(47,107,255,.45)",
-                            },
-                        }}
                     >
                         {loading ? (
                             <CircularProgress

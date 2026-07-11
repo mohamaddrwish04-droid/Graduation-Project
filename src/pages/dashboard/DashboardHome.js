@@ -7,11 +7,15 @@ import SystemStatusCard from "../../components/dashboard/SystemStatusCard";
 import QuickActions from "../../components/dashboard/QuickActions";
 import PageHeader from "../../components/common/PageHeader";
 import { Grid } from "@mui/material";
+import {useTranslation} from "react-i18next";
+import { t } from "i18next";
+
 
 
 
 
 function DashboardHome() {
+    const {t} = useTranslation();
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -37,8 +41,8 @@ function DashboardHome() {
     return (
         <>
             <PageHeader
-                title="لوحة التحكم الرئيسية"
-                subtitle="نظرة شاملة على مؤشرات النظام وإحصائيات المنصة مع وصول سريع إلى أهم العمليات الإدارية."
+                title={t("dashboard")}
+                subtitle={t("disc-dashboard")}
             />
             <SummaryCardsRow summary={summary} />
 

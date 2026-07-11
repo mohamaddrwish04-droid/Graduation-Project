@@ -6,7 +6,7 @@ import {
 } from "react";
 
 import { ThemeProvider, CssBaseline } from "@mui/material";
-
+import{useLanguage} from "./LanguageContext";
 import getTheme from "../styles/muiTheme";
 
 const ThemeContext = createContext();
@@ -18,6 +18,7 @@ export function CustomThemeProvider({
         localStorage.getItem("theme") ||
         "dark"
     );
+    const { direction } = useLanguage();
 
     const toggleTheme = () => {
         const newMode =
@@ -34,8 +35,8 @@ export function CustomThemeProvider({
     };
 
     const theme = useMemo(
-        () => getTheme(mode),
-        [mode]
+        () => getTheme(mode, direction),
+        [mode, direction]
     );
 
     return (

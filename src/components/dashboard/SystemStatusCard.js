@@ -9,31 +9,31 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import BuildCircleIcon from "@mui/icons-material/BuildCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import { useTranslation } from "react-i18next";
 
-export default function SystemStatusCard({
-    summary,
-}) {
+export default function SystemStatusCard({summary,}) {
+    const { t } = useTranslation();
     const items = [
         {
-            title: "بانتظار عروض",
+            title: t("orders pending"),
             value: summary?.waitingForOffersOrders ?? 0,
             color: "#F59E0B",
             icon: <PendingActionsIcon />,
         },
         {
-            title: "قيد التنفيذ",
+            title: t("orders in progress"),
             value: summary?.inProgressOrders ?? 0,
             color: "#3B82F6",
             icon: <BuildCircleIcon />,
         },
         {
-            title: "مكتملة",
+            title: t("orders completed"),
             value: summary?.completedOrders ?? 0,
             color: "#22C55E",
             icon: <CheckCircleIcon />,
         },
         {
-            title: "اشتراكات نشطة",
+            title: t("Active subscriptions"),
             value: summary?.activeSubscriptions ?? 0,
             color: "#8B5CF6",
             icon: <WorkspacePremiumIcon />,
@@ -53,7 +53,7 @@ export default function SystemStatusCard({
                 fontWeight="bold"
                 mb={3}
             >
-                حالة النظام
+                {t("System status")}
             </Typography>
 
             <Stack spacing={2}>

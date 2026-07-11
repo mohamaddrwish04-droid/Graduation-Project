@@ -1,0 +1,39 @@
+#icon-container {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    background: rgba(47,107,255,0.12);
+}
+
+#icon-container svg {
+    width: 32px;
+    height: 32px;
+}
+
+#icon-container:hover {
+    background: rgba(47,107,255,0.2);
+    box-shadow: 0px 4px 20px rgba(47,107,255,0.2);
+}
+
+#stat-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+#stat-card {
+    height: 120px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 8px 25px rgba(47,107,255,0.12);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#stat-card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0px 4px 20px rgba(47,107,255,0.2);
+}

@@ -1,8 +1,8 @@
 
 import { createTheme } from "@mui/material/styles";
 
-const getTheme = (mode) => createTheme({
-    direction: "rtl",
+const getTheme = (mode, direction = "ltr") => createTheme({
+    direction: direction,
 
     palette: {
         mode,
@@ -226,19 +226,60 @@ const getTheme = (mode) => createTheme({
             },
         },
 
+        MuiTableRow: {
+            styleOverrides: {
+                root: {
+                    transition: "all .25s ease",
+
+                    "&:hover": {
+                        backgroundColor:
+                            mode === "dark"
+                                ? "rgba(47,107,255,0.08)"
+                                : "rgba(47,107,255,0.06)",
+
+                        transform: "scale(1.002)",
+                    },
+                },
+            },
+        },
+
         MuiTableCell: {
             styleOverrides: {
                 root: {
-                    backgroundColor: mode === "dark"
-                        ? "#141726"
-                        : "#FFFFFF",
+                    backgroundColor:
+                        mode === "dark"
+                            ? "#141726"
+                            : "#FFFFFF",
+
+                    borderBottom:
+                        mode === "dark"
+                            ? "1px solid rgba(255,255,255,0.05)"
+                            : "1px solid rgba(0,0,0,0.06)",
+
+                    transition: "all .25s ease",
+
+                    fontWeight: 500,
                 },
 
                 head: {
-                    color: mode === "dark"
-                        ? "#FFFFFF"
-                        : "#111827",
+                    background:
+                        mode === "dark"
+                            ? "#111827"
+                            : "#F8FAFC",
+
+                    color:
+                        mode === "dark"
+                            ? "#FFFFFF"
+                            : "#111827",
+
                     fontWeight: 700,
+
+                    fontSize: "0.95rem",
+
+                    borderBottom:
+                        mode === "dark"
+                            ? "1px solid rgba(255,255,255,0.08)"
+                            : "1px solid rgba(0,0,0,0.08)",
                 },
             },
         },

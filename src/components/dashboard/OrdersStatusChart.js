@@ -11,6 +11,8 @@ import {
     Paper,
     Typography,
 } from "@mui/material";
+import {useTranslation} from "react-i18next";
+
 
 const COLORS = [
     "#F59E0B",
@@ -19,27 +21,26 @@ const COLORS = [
     "#EF4444",
 ];
 
-export default function OrdersStatusChart({
-    summary,
-}) {
+export default function OrdersStatusChart({summary,}) {
+    const {t} = useTranslation();
     const data = [
         {
-            name: "بانتظار العروض",
+            name: t("orders pending"),
             value:
                 summary?.waitingForOffersOrders ?? 0,
         },
         {
-            name: "قيد التنفيذ",
+            name: t("orders in progress"),
             value:
                 summary?.inProgressOrders ?? 0,
         },
         {
-            name: "مكتملة",
+            name: t("orders completed"),
             value:
                 summary?.completedOrders ?? 0,
         },
         {
-            name: "أخرى",
+            name: t("orders canceled"),
             value: Math.max(
                 0,
                 (summary?.totalOrders ?? 0) -
@@ -63,7 +64,7 @@ export default function OrdersStatusChart({
                 fontWeight="bold"
                 mb={3}
             >
-                توزيع حالات الطلبات
+                {t("Orders Status")}
             </Typography>
 
             <ResponsiveContainer

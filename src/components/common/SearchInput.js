@@ -13,12 +13,14 @@ function SearchInput({
             onChange={onChange}
             placeholder={placeholder}
             variant="outlined"
-            InputProps={{
-                startAdornment: (
-                    <InputAdornment position="start">
-                        <SearchIcon color="primary" />
-                    </InputAdornment>
-                ),
+            slotProps={{
+                input: {
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon color="primary" />
+                        </InputAdornment>
+                    ),
+                },
             }}
         />
     );

@@ -15,11 +15,75 @@ import FilterSelect from "../../components/common/FilterSelect";
 import CustomTable from "../../components/tables/CustomTable";
 import OrderDetailsDialog from "./OrderDetailsDialog";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import { getOrders } from "../../services/orderService";
+import { getSpecializations } from "../../services/specializationService";
+import { useTranslation } from "react-i18next";
+
 
 function OrdersPage() {
+    const { t } = useTranslation();
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [specializationFilter, setSpecializationFilter] = useState("all");
+    const [specializations, setSpecializations] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
+
+    useEffect(() => {
+        loadOrders();
+        loadSpecializations();
+    }, []);
+
+    const loadOrders = async () => {
+        try {
+            setLoading(true);
+
+            const data = await getOrders();
+
+            setOrders(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const loadSpecializations = async () => {
+        try {
+            const data =
+                await getSpecializations();
+
+            setSpecializations(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const statistics = useMemo(() => {
+        return {
+            total: orders.length,
+
+            waiting: orders.filter(
+                (o) => o.status === 0
+            ).length,
+
+            inProgress: orders.filter(
+                (o) => o.status === 2
+            ).length,
+
+            completed: orders.filter(
+                (o) => o.status === 4
+            ).length,
+
+            cancelled: orders.filter(
+                (o) => o.status === 5
+            ).length,
+        };
+    }, [orders]);
+
     const getStatusChip = (status) => {
         const config = {
             Open: {
@@ -52,59 +116,27 @@ function OrdersPage() {
             />
         );
     };
-    const orders = [
-        {
-            id: "#101",
-            specialization: "كهرباء",
-            description: "إصلاح لوحة كهربائية",
-            status: getStatusChip("Open"),
-            createdAt: "2026-05-20",
-        },
 
-        {
-            id: "#102",
-            specialization: "سباكة",
-            description: "إصلاح تسرب مياه",
-            status: getStatusChip("InProgress"),
-            createdAt: "2026-05-21",
-        },
-
-        {
-            id: "#103",
-            specialization: "تكييف",
-            description: "صيانة مكيف",
-            status: getStatusChip("Completed"),
-            createdAt: "2026-05-22",
-        },
-
-        {
-            id: "#104",
-            specialization: "أجهزة منزلية",
-            description: "إصلاح غسالة",
-            status: getStatusChip("Cancelled"),
-            createdAt: "2026-05-23",
-        },
-    ];
     const columns = [
         {
             field: "id",
-            header: "رقم الطلب",
+            header: t("ID"),
         },
         {
-            field: "specialization",
-            header: "التخصص",
+            field: "customerName",
+            header: t("customer"),
         },
         {
-            field: "description",
-            header: "الوصف",
+            field: "specializationName",
+            header: t("specialization"),
         },
         {
             field: "status",
-            header: "الحالة",
+            header: t("status"),
         },
         {
             field: "createdAt",
-            header: "تاريخ الإنشاء",
+            header: t("created at"),
         },
     ];
     const tableActions = (row) => (
@@ -144,11 +176,51 @@ function OrdersPage() {
             </Button>
         </Box>
     );
+
+    const filteredOrders = useMemo(() => {
+        return orders.filter((order) => {
+            const matchesSearch =
+                order.customerName
+                    ?.toLowerCase()
+                    .includes(
+                        search.toLowerCase()
+                    ) ||
+                order.description
+                    ?.toLowerCase()
+                    .includes(
+                        search.toLowerCase()
+                    ) ||
+                order.id
+                    .toString()
+                    .includes(search);
+
+            const matchesStatus =
+                statusFilter === "all" ||
+                order.status === statusFilter;
+
+            const matchesSpecialization =
+                specializationFilter ===
+                "all" ||
+                order.specializationId ===
+                specializationFilter;
+
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesSpecialization
+            );
+        });
+    }, [
+        orders,
+        search,
+        statusFilter,
+        specializationFilter,
+    ]);
     return (
         <>
             <PageHeader
-                title="إدارة الطلبات"
-                subtitle="متابعة جميع طلبات الصيانة وإدارة حالتها."
+                title={t("manage orders")}
+                subtitle={t("disc-orders")}
             />
             <Box
                 sx={{
@@ -159,32 +231,32 @@ function OrdersPage() {
                 }}
             >
                 <StatCard
-                    title="إجمالي الطلبات"
-                    value="120"
+                    title={t("all orders")}
+                    value={statistics.total}
                     icon={<ReceiptLongIcon />}
                 />
 
                 <StatCard
-                    title="مفتوحة"
-                    value="40"
+                    title={t("orders pending")}
+                    value={statistics.waiting}
                     icon={<PendingActionsIcon />}
                 />
 
                 <StatCard
-                    title="قيد التنفيذ"
-                    value="35"
+                    title={t("orders in progress")}
+                    value={statistics.inProgress}
                     icon={<EngineeringIcon />}
                 />
 
                 <StatCard
-                    title="مكتملة"
-                    value="38"
+                    title={t("orders completed")}
+                    value={statistics.completed}
                     icon={<TaskAltIcon />}
                 />
 
                 <StatCard
-                    title="ملغاة"
-                    value="7"
+                    title={t("orders canceled")}
+                    value={statistics.cancelled}
                     icon={<CancelIcon />}
                 />
             </Box>
@@ -196,17 +268,26 @@ function OrdersPage() {
                 }}
             >
                 <Box sx={{ flex: 1 }}>
-                    <SearchInput placeholder="ابحث عن طلب..." />
+                    <SearchInput placeholder="ابحث عن طلب..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
                 </Box>
                 <Box sx={{ width: 220 }}>
                     <FilterSelect
                         label="الحالة"
+                        value={statusFilter}
+                        onChange={(e) =>
+                            setStatusFilter(e.target.value)
+                        }
                         options={[
                             { value: "all", label: "الكل" },
-                            { value: "open", label: "مفتوح" },
-                            { value: "progress", label: "قيد التنفيذ" },
-                            { value: "completed", label: "مكتمل" },
-                            { value: "cancelled", label: "ملغي" },
+                            { value: 0, label: "بانتظار العروض" },
+                            { value: 1, label: "تمت المعاينة" },
+                            { value: 2, label: "قيد التنفيذ" },
+                            { value: 3, label: "بانتظار تأكيد الإنجاز", },
+                            { value: 4, label: "مكتمل" },
+                            { value: 5, label: "ملغي" },
                         ]}
                     />
                 </Box>
@@ -214,18 +295,29 @@ function OrdersPage() {
                 <Box sx={{ width: 220 }}>
                     <FilterSelect
                         label="التخصص"
+                        value={specializationFilter}
+                        onChange={(e) =>
+                            setSpecializationFilter(
+                                e.target.value
+                            )
+                        }
                         options={[
-                            { value: "all", label: "كل التخصصات" },
-                            { value: "electricity", label: "كهرباء" },
-                            { value: "plumbing", label: "سباكة" },
-                            { value: "ac", label: "تكييف" },
+                            {
+                                value: "all",
+                                label: "كل التخصصات",
+                            },
+
+                            ...specializations.map((s) => ({
+                                value: s.id,
+                                label: s.name,
+                            })),
                         ]}
                     />
                 </Box>
             </Box>
             <CustomTable
                 columns={columns}
-                rows={orders}
+                rows={filteredOrders}
                 actions={tableActions}
             />
             <OrderDetailsDialog

@@ -7,22 +7,22 @@ import {
     CartesianGrid,
     Tooltip,
 } from "recharts";
+import {useTranslation} from "react-i18next";
 
 import {
     Paper,
     Typography,
 } from "@mui/material";
 
-export default function UsersProvidersChart({
-    summary,
-}) {
+export default function UsersProvidersChart({summary,}) {
+    const {t} = useTranslation();
     const data = [
         {
-            name: "المستخدمون",
+            name: t("users"),
             العدد: summary?.totalUsers ?? 0,
         },
         {
-            name: "مقدمو الخدمة",
+            name: t("providers"),
             العدد: summary?.totalProviders ?? 0,
         },
     ];
@@ -39,7 +39,7 @@ export default function UsersProvidersChart({
                 fontWeight="bold"
                 mb={3}
             >
-                مقارنة المستخدمين ومقدمي الخدمة
+               {t("Users and Providers")}
             </Typography>
 
             <ResponsiveContainer

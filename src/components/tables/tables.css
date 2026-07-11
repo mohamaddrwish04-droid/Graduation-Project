@@ -1,0 +1,52 @@
+.custom-table-container {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.custom-table-header-cell {
+    font-weight: 700 !important;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+.custom-table-row {
+    transition: all 0.25s ease;
+}
+
+.custom-table-row:hover {
+    background-color: rgba(47, 107, 255, 0.08);
+}
+
+.custom-table-row:hover td {
+    color: inherit;
+}
+
+.custom-table-cell {
+    transition: all 0.25s ease;
+    font-weight: 500;
+}
+
+.custom-table-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.custom-table-empty {
+    padding: 24px 0;
+    opacity: 0.8;
+}
+
+/* تحسين مظهر الصفوف الفردية */
+.custom-table-row:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.015);
+}
+
+/* تأثير احترافي عند المرور */
+.custom-table-row:hover {
+    transform: translateY(-1px);
+    box-shadow: inset 3px 0 0 #2f6bff;
+    background-color: blue;
+}
