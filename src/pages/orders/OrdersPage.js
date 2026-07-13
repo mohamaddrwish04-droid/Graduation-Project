@@ -1,5 +1,4 @@
 import { Box, Button, Chip } from "@mui/material";
-
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import EngineeringIcon from "@mui/icons-material/Engineering";
@@ -7,7 +6,7 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import CancelIcon from "@mui/icons-material/Cancel";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-
+import TablePagination from "@mui/material/TablePagination";
 import PageHeader from "../../components/common/PageHeader";
 import StatCard from "../../components/cards/StatCard";
 import SearchInput from "../../components/common/SearchInput";
@@ -15,107 +14,25 @@ import FilterSelect from "../../components/common/FilterSelect";
 import CustomTable from "../../components/tables/CustomTable";
 import OrderDetailsDialog from "./OrderDetailsDialog";
 
-import { useEffect, useMemo, useState } from "react";
-
-import { getOrders } from "../../services/orderService";
-import { getSpecializations } from "../../services/specializationService";
 import { useTranslation } from "react-i18next";
+import { useOrders } from "./useOrders";
 
 
 function OrdersPage() {
+    const {
+        handleRowsPerPageChange, paginatedOrders,
+        filteredOrders, statistics,
+        selectedOrder, setSelectedOrder,
+        search, setSearch, openDialog, setOpenDialog,
+        specializations, specializationFilter,
+        setSpecializationFilter, statusFilter,
+        setStatusFilter, rowsPerPage,
+        page, setPage,
+    } = useOrders();
+
     const { t } = useTranslation();
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState("");
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [specializationFilter, setSpecializationFilter] = useState("all");
-    const [specializations, setSpecializations] = useState([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState(null);
 
-    useEffect(() => {
-        loadOrders();
-        loadSpecializations();
-    }, []);
 
-    const loadOrders = async () => {
-        try {
-            setLoading(true);
-
-            const data = await getOrders();
-
-            setOrders(data);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-    const loadSpecializations = async () => {
-        try {
-            const data =
-                await getSpecializations();
-
-            setSpecializations(data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const statistics = useMemo(() => {
-        return {
-            total: orders.length,
-
-            waiting: orders.filter(
-                (o) => o.status === 0
-            ).length,
-
-            inProgress: orders.filter(
-                (o) => o.status === 2
-            ).length,
-
-            completed: orders.filter(
-                (o) => o.status === 4
-            ).length,
-
-            cancelled: orders.filter(
-                (o) => o.status === 5
-            ).length,
-        };
-    }, [orders]);
-
-    const getStatusChip = (status) => {
-        const config = {
-            Open: {
-                label: "مفتوح",
-                color: "primary",
-            },
-            InProgress: {
-                label: "قيد التنفيذ",
-                color: "warning",
-            },
-            Completed: {
-                label: "مكتمل",
-                color: "success",
-            },
-            Cancelled: {
-                label: "ملغي",
-                color: "error",
-            },
-        };
-
-        return (
-            <Chip
-                label={config[status].label}
-                color={config[status].color}
-                size="small"
-                sx={{
-                    minWidth: 100,
-                    fontWeight: 600,
-                }}
-            />
-        );
-    };
 
     const columns = [
         {
@@ -177,45 +94,6 @@ function OrdersPage() {
         </Box>
     );
 
-    const filteredOrders = useMemo(() => {
-        return orders.filter((order) => {
-            const matchesSearch =
-                order.customerName
-                    ?.toLowerCase()
-                    .includes(
-                        search.toLowerCase()
-                    ) ||
-                order.description
-                    ?.toLowerCase()
-                    .includes(
-                        search.toLowerCase()
-                    ) ||
-                order.id
-                    .toString()
-                    .includes(search);
-
-            const matchesStatus =
-                statusFilter === "all" ||
-                order.status === statusFilter;
-
-            const matchesSpecialization =
-                specializationFilter ===
-                "all" ||
-                order.specializationId ===
-                specializationFilter;
-
-            return (
-                matchesSearch &&
-                matchesStatus &&
-                matchesSpecialization
-            );
-        });
-    }, [
-        orders,
-        search,
-        statusFilter,
-        specializationFilter,
-    ]);
     return (
         <>
             <PageHeader
@@ -317,9 +195,41 @@ function OrdersPage() {
             </Box>
             <CustomTable
                 columns={columns}
-                rows={filteredOrders}
+                rows={paginatedOrders}
                 actions={tableActions}
             />
+
+            <TablePagination
+                component="div"
+                count={filteredOrders.length}
+                page={page}
+                onPageChange={(event, newPage) =>
+                    setPage(newPage)
+                }
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                rowsPerPageOptions={[10, 25, 50, 100]}
+                labelRowsPerPage="عدد العناصر:"
+                sx={{
+                    borderTop:
+                        "1px solid rgba(255,255,255,0.08)",
+
+                    "& .MuiTablePagination-toolbar": {
+                        color: "text.primary",
+                    },
+
+                    "& .MuiIconButton-root": {
+                        color: "text.primary",
+                    },
+
+                    "& .MuiSelect-select": {
+                        color: "text.primary",
+                    },
+                }}
+            />
+
+
+
             <OrderDetailsDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}

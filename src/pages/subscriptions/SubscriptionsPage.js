@@ -9,48 +9,32 @@ import PendingIcon from '@mui/icons-material/Pending';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
-import {IconButton,Tooltip} from "@mui/material";
-import {Dialog,DialogTitle,DialogContent} from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ImageIcon from "@mui/icons-material/Image";
 import KeyIcon from "@mui/icons-material/Key";
 import CommentIcon from "@mui/icons-material/Comment";
-import { useState, useEffect } from "react";
-import {
-    subscriptionPaymentRequestsReject,
-    subscriptionPaymentRequestsApprove,
-    subscriptionPaymentRequestsPending,
-    subscriptionPaymentRequests
-} from "../../services/subscriptionService";
-import {getSubscriptionPlans} from "../../services/subscriptionPlanService";
 import Typography from '@mui/material/Typography';
+import { useSubscriptionPage } from "./useSubscriptionPage";
 import { useTranslation } from "react-i18next";
 
 export default function SubscriptionPage() {
-    const [requests, setRequests] = useState([]);
-    const [filteredRequests, setFilteredRequests] = useState([]);
-    const [selectedRequest, setSelectedRequest] = useState(null);
-    const [openRejectDialog, setOpenRejectDialog] = useState(false);
-    const [openTransactionDialog, setOpenTransactionDialog] = useState(false);
-    const [openReasonDialog, setOpenReasonDialog] = useState(false);
-    const [openImageDialog, setOpenImageDialog] = useState(false);
-    const [adminNote, setAdminNote] = useState("");
-    const [search, setSearch] = useState("");
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [planFilter, setPlanFilter] = useState("all");
+    const{
+        handleApprove, handleReject, handleShowImage,
+        handleShowTransaction, handleShowReason, handleOpenReject,
+         approvedRequests, rejectedRequests, pendingRequests,
+        totalRequests, filteredRequests, 
+        search, setSearch, planFilter, setPlanFilter,
+        statusFilter, setStatusFilter, selectedRequest, 
+        openImageDialog, setOpenImageDialog,
+        openReasonDialog, setOpenReasonDialog,
+        openRejectDialog, setOpenRejectDialog,
+        adminNote,setAdminNote,
+        openTransactionDialog, setOpenTransactionDialog, plans
+    } = useSubscriptionPage();
 
-    const totalRequests = requests.length;
-    const pendingRequests = requests.filter(
-        x => x.status === 0
-    ).length;
-    const approvedRequests = requests.filter(
-        x => x.status === 1
-    ).length;
-    const rejectedRequests = requests.filter(
-        x => x.status === 2
-    ).length;
-    const [plans, setPlans] = useState([]);
     const { t } = useTranslation();
 
     const columns = [
@@ -83,109 +67,8 @@ export default function SubscriptionPage() {
             header: t("created at"),
         },
     ];
-    useEffect(() => {
-        let data = [...requests];
-        if (search) {
-            data = data.filter((item) =>
-                item.providerName
-                    .toLowerCase()
-                    .includes(search.toLowerCase())
-            );
-        }
 
-        if (statusFilter !== "all") {
-            data = data.filter(
-                (item) =>
-                    item.status === Number(statusFilter)
-            );
-        }
-
-        if (planFilter !== "all") {
-            data = data.filter(
-                (item) =>
-                    item.subscriptionPlanId ===
-                    Number(planFilter)
-            );
-        }
-
-        setFilteredRequests(data);
-    }, [search, statusFilter, planFilter, requests]);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        try {
-            const requestsData =
-                await subscriptionPaymentRequests();
-
-            const plansData =
-                await getSubscriptionPlans();
-
-            setRequests(requestsData);
-            setFilteredRequests(requestsData);
-            setPlans(plansData);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    const handleApprove = async (id) => {
-        try {
-            await subscriptionPaymentRequestsApprove(id);
-
-            loadData();
-        }
-        catch (error) {
-            console.log(error);
-        }
-    };
-    const handleOpenReject = (row) => {
-        setSelectedRequest(row);
-        setAdminNote("");
-        setOpenRejectDialog(true);
-    };
-    const handleReject = async () => {
-        try {
-
-            await subscriptionPaymentRequestsReject(
-                selectedRequest.id,
-                adminNote
-            );
-
-            setOpenRejectDialog(false);
-
-            loadData();
-
-        } catch (error) {
-
-            console.log(error);
-
-        }
-    };
-    const handleShowTransaction = (row) => {
-
-        setSelectedRequest(row);
-
-        setOpenTransactionDialog(true);
-
-    };
-    const handleShowReason = (row) => {
-
-        setSelectedRequest(row);
-
-        setOpenReasonDialog(true);
-
-    };
-    const handleShowImage = (row) => {
-
-        setSelectedRequest(row);
-
-        setOpenImageDialog(true);
-
-    };
     const tableActions = (row) => (
-
         <Box
             sx={{
                 display: "flex",
@@ -193,13 +76,10 @@ export default function SubscriptionPage() {
                 gap: 1
             }}
         >
-
             {
                 row.status === 0 && (
-
                     <>
                         <Tooltip title="قبول الطلب">
-
                             <IconButton
                                 color="success"
                                 onClick={() =>
@@ -208,24 +88,16 @@ export default function SubscriptionPage() {
                             >
                                 <CheckCircleIcon />
                             </IconButton>
-
                         </Tooltip>
-
-
                         <Tooltip title="رفض الطلب">
-
                             <IconButton
                                 color="error"
-                                onClick={() =>
-                                    handleOpenReject(row)
-                                }
+                                onClick={() => handleOpenReject(row)}
                             >
                                 <CancelIcon />
                             </IconButton>
-
                         </Tooltip>
                     </>
-
                 )
             }
 
@@ -284,7 +156,6 @@ export default function SubscriptionPage() {
             }
 
         </Box>
-
     );
 
     return (
@@ -334,7 +205,7 @@ export default function SubscriptionPage() {
                 <SearchInput
                     placeholder="ابحث عن مستخدم..."
                     value={search}
-                    onChange={(e)=>{
+                    onChange={(e) => {
                         setSearch(e.target.value)
                     }}
                 />

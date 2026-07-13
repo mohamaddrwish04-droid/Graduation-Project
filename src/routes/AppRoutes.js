@@ -9,11 +9,16 @@ import SpecializationsPage from "../pages/specializations/SpecializationsPage";
 import SubscriptionPlans from "../pages/subscriptionPlan/SubscriptionPlans";
 import RatingPage from "../pages/rating/RatingPage";
 import ProtectedRoute from "./ProtectedRoute";
+import ForgotPassword from "../pages/auth/ForgotPassowrd";
+import ResetPassword from "../pages/auth/ResetPassword";
+import SettingPage from "../pages/setting/SettingPage";
 
 function AppRoutes() {
     return (
         <Routes>
             <Route path="/" element={<Login />} />
+            <Route path="/Forgot-Password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
                 element={
                     <ProtectedRoute>
@@ -54,6 +59,10 @@ function AppRoutes() {
                 <Route
                     path="/ratings"
                     element={<RatingPage />}
+                />
+                <Route
+                    path="/settings"
+                    element={<SettingPage />}
                 />
             </Route>
         </Routes>

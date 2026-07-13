@@ -1,111 +1,126 @@
 import {
-    Avatar,
-    Box,
-    Chip,
     Dialog,
-    DialogContent,
     DialogTitle,
-    Divider,
-    Grid,
-    IconButton,
-    Paper,
+    DialogContent,
     Typography,
+    Box,
+    IconButton,
+    Chip,
+    Grid,
+    Paper,
+    Avatar,
+    Divider,
+    Button,
+    Rating,
 } from "@mui/material";
+
 
 import CloseIcon from "@mui/icons-material/Close";
 import PersonIcon from "@mui/icons-material/Person";
-import HandymanIcon from "@mui/icons-material/Handyman";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DescriptionIcon from "@mui/icons-material/Description";
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import HandymanIcon from "@mui/icons-material/Handyman";
+import StarIcon from "@mui/icons-material/Star";
+import MapIcon from "@mui/icons-material/Map";
+function OrderDetailsDialog({ open, onClose, order, }) {
 
-function OrderDetailsDialog({open,onClose,order,}) {
     if (!order) return null;
+    const getStatusChip = (status) => {
+        const statusMap = {
+            0: {
+                label: "بانتظار العروض",
+                color: "info",
+            },
+
+            1: {
+                label: "تمت المعاينة",
+                color: "warning",
+            },
+
+            2: {
+                label: "قيد التنفيذ",
+                color: "primary",
+            },
+
+            3: {
+                label: "بانتظار تأكيد الإنجاز",
+                color: "secondary",
+            },
+
+            4: {
+                label: "مكتمل",
+                color: "success",
+            },
+
+            5: {
+                label: "ملغي",
+                color: "error",
+            },
+        };
+        const current = statusMap[status] || {
+            label: "غير معروف",
+            color: "default",
+        };
+
+
+        return (
+            <Chip
+                label={current.label}
+                color={current.color}
+                sx={{
+                    minWidth: 150,
+                    fontWeight: 700,
+                }}
+            />
+        );
+    };
+    const openLocation = () => {
+        if (!order.latitude || !order.longitude) {
+            return;
+        }
+
+
+        const url = `https://www.openstreetmap.org/?mlat=${order.latitude}&mlon=${order.longitude}&zoom=15;`
+
+
+        window.open(
+            url,
+            "_blank",
+            "width=1000,height=700"
+        );
+    };
+
     return (
         <Dialog
             open={open}
             onClose={onClose}
-            maxWidth="sm"
+            maxWidth="md"
             fullWidth
         >
             <DialogTitle
                 sx={{
                     display: "flex",
-                    justifyContent:"space-between",
+                    justifyContent: "space-between",
                     alignItems: "center",
-                    pb: 2,
-                }}>
+                }}
+            >
                 <Box>
-                    <Typography
-                        variant="h5"
-                        fontWeight="bold"
-                    >
-                        تفاصيل الطلب
+                    <Typography variant="h5" fontWeight="bold">
+                        تفاصيل الطلب #{order.id}
                     </Typography>
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                    >
-                        رقم الطلب {order.id}
-                    </Typography>
+
+                    <Box sx={{ mt: 1 }}>
+                        {getStatusChip(order.status)}
+                    </Box>
                 </Box>
-                <IconButton
-                    onClick={onClose}
-                >
+                <IconButton onClick={onClose}>
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
+
             <DialogContent>
-                {/* الحالة */}
-                <Box sx={{mb: 3,}}>
-                    <Chip
-                        label={order.status}
-                        color="primary"
-                        sx={{fontWeight:700, minWidth: 130, }}
-                    />
-                </Box>
-                <Grid containerspacing={3}>
-                    {/* العميل */}
-                    <Grid item xs={12} md={6}>
-                        <Paper
-                            sx={{ p: 3,borderRadius: 3,}}>
-                            <Box
-                                sx={{
-                                    display:"flex",
-                                    alignItems:"center",
-                                    gap: 1,
-                                    mb: 2,
-                                }}
-                            >
-                                <Avatar>
-                                    <PersonIcon />
-                                </Avatar>
-                                <Typography
-                                    variant="h6"
-                                    fontWeight="bold"
-                                >
-                                    معلومات العميل
-                                </Typography>
-                            </Box>
-                            <Divider
-                                sx={{mb: 2, }}
-                            />
-                            <Typography>
-                                الاسم:
-                                محمد
-                                درويش
-                            </Typography>
-                            <Typography>
-                                الهاتف:
-                                099999999
-                            </Typography>
-                            <Typography>
-                                البريد:
-                                mohamad@gmail.com
-                            </Typography>
-                        </Paper>
-                    </Grid>
-                    {/* الطلب */}
+                <Grid container spacing={3}>
+                    {/* معلومات العميل */}
                     <Grid
                         item
                         xs={12}
@@ -115,16 +130,69 @@ function OrderDetailsDialog({open,onClose,order,}) {
                             sx={{
                                 p: 3,
                                 borderRadius: 3,
+                                height: "100%",
                             }}
                         >
                             <Box
                                 sx={{
-                                    display:"flex",
-                                    alignItems:"center",
+                                    display: "flex",
+                                    alignItems: "center",
                                     gap: 1,
                                     mb: 2,
                                 }}
                             >
+                                <Avatar>
+                                    <PersonIcon />
+                                </Avatar>
+
+
+                                <Typography
+                                    variant="h6"
+                                    fontWeight="bold"
+                                >
+                                    معلومات العميل
+                                </Typography>
+
+                            </Box>
+                            <Divider sx={{ mb: 2 }} />
+                            <Typography>
+                                الاسم:
+                                {" "}
+                                {order.customerName || "غير متوفر"}
+                            </Typography>
+
+
+                            <Typography sx={{ mt: 1 }}>
+                                رقم العميل:
+                                {" "}
+                                {order.customerId}
+                            </Typography>
+                        </Paper>
+                    </Grid>
+                    {/* معلومات الطلب */}
+                    <Grid
+                        item
+                        xs={12}
+                        md={6}
+                    >
+
+                        <Paper
+                            sx={{
+                                p: 3,
+                                borderRadius: 3,
+                                height: "100%",
+                            }}
+                        >
+
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    mb: 2,
+                                }}
+                            >
+
                                 <Avatar>
                                     <DescriptionIcon />
                                 </Avatar>
@@ -135,18 +203,12 @@ function OrderDetailsDialog({open,onClose,order,}) {
                                     معلومات الطلب
                                 </Typography>
                             </Box>
-                            <Divider
-                                sx={{
-                                    mb: 2,
-                                }}
-                            />
+                            <Divider sx={{ mb: 2 }} />
                             <Typography>
                                 التخصص:
-                                {
-                                    order.specialization
-                                }
+                                {" "}
+                                {order.specializationName}
                             </Typography>
-
                             <Typography
                                 sx={{
                                     mt: 2,
@@ -157,9 +219,7 @@ function OrderDetailsDialog({open,onClose,order,}) {
                             <Typography
                                 color="text.secondary"
                             >
-                                {
-                                    order.description
-                                }
+                                {order.description || "لا يوجد وصف"}
                             </Typography>
                             <Typography
                                 sx={{
@@ -167,14 +227,67 @@ function OrderDetailsDialog({open,onClose,order,}) {
                                 }}
                             >
                                 تاريخ الإنشاء:
+                                {" "}
                                 {
-                                    order.createdAt
+                                    new Date(
+                                        order.createdAt
+                                    ).toLocaleDateString(
+                                        "ar-EG"
+                                    )
                                 }
                             </Typography>
                         </Paper>
                     </Grid>
+                    {/* مقدم الخدمة */}
+                    {
+                        order.selectedProviderName && (
+
+                            <Grid
+                                item
+                                xs={12}
+                                md={6}
+                            >
+
+                                <Paper
+                                    sx={{
+                                        p: 3,
+                                        borderRadius: 3,
+                                    }}
+                                >
+
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 1,
+                                            mb: 2,
+                                        }}
+                                    >
+                                        <Avatar>
+                                            <HandymanIcon />
+                                        </Avatar>
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight="bold"
+                                        >
+                                            مقدم الخدمة
+                                        </Typography>
+                                    </Box>
+                                    <Divider sx={{ mb: 2 }} />
+                                    <Typography>
+                                        الاسم:
+                                        {" "}
+                                        {order.selectedProviderName}
+                                    </Typography>
+                                </Paper>
+                            </Grid>
+                        )
+                    }
                     {/* الموقع */}
-                    <Grid item xs={12}>
+                    <Grid
+                        item
+                        xs={12}
+                    >
                         <Paper
                             sx={{
                                 p: 3,
@@ -183,8 +296,8 @@ function OrderDetailsDialog({open,onClose,order,}) {
                         >
                             <Box
                                 sx={{
-                                    display:"flex",
-                                    alignItems:"center",
+                                    display: "flex",
+                                    alignItems: "center",
                                     gap: 1,
                                     mb: 2,
                                 }}
@@ -199,141 +312,88 @@ function OrderDetailsDialog({open,onClose,order,}) {
                                     الموقع
                                 </Typography>
                             </Box>
-                            <Divider
-                                sx={{
-                                    mb: 2,
-                                }}
-                            />
+                            <Divider sx={{ mb: 2 }} />
                             <Typography>
-                                دمشق -
-                                جرمانا
+                                العنوان:
+                                {" "}
+                                {order.addressText || "غير متوفر"}
                             </Typography>
-                            <Typography>
+                            <Typography sx={{ mt: 1 }}>
                                 Latitude:
-                                33.5138
+                                {" "}
+                                {order.latitude}
                             </Typography>
                             <Typography>
                                 Longitude:
-                                36.2765
+                                {" "}
+                                {order.longitude}
                             </Typography>
-                        </Paper>
-                    </Grid>
-
-                    {/* مقدم الخدمة */}
-
-                    <Grid
-                        item
-                        xs={12}
-                        md={6}
-                    >
-                        <Paper
-                            sx={{
-                                p: 3,
-                                borderRadius: 3,
-                            }}
-                        >
-                            <Box
+                            <Button
+                                variant="contained"
+                                startIcon={<MapIcon />}
                                 sx={{
-                                    display:
-                                        "flex",
-
-                                    alignItems:
-                                        "center",
-
-                                    gap: 1,
-
-                                    mb: 2,
+                                    mt: 2,
+                                    borderRadius: 2,
+                                    textTransform: "none",
                                 }}
+                                onClick={openLocation}
                             >
-                                <Avatar>
-                                    <HandymanIcon />
-                                </Avatar>
-
-                                <Typography
-                                    variant="h6"
-                                    fontWeight="bold"
-                                >
-                                    مقدم الخدمة
-                                </Typography>
-                            </Box>
-
-                            <Divider
-                                sx={{
-                                    mb: 2,
-                                }}
-                            />
-
-                            <Typography>
-                                أحمد
-                                خالد
-                            </Typography>
-
-                            <Typography>
-                                كهرباء
-                            </Typography>
-
-                            <Typography>
-                                098888888
-                            </Typography>
+                                فتح الموقع على الخريطة
+                            </Button>
                         </Paper>
                     </Grid>
-
-                    {/* العرض المقبول */}
-
-                    <Grid
-                        item
-                        xs={12}
-                        md={6}
-                    >
-                        <Paper
-                            sx={{
-                                p: 3,
-                                borderRadius: 3,
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    display:
-                                        "flex",
-
-                                    alignItems:
-                                        "center",
-
-                                    gap: 1,
-
-                                    mb: 2,
-                                }}
+                    {/* التقييم */}
+                    {
+                        order.hasRating && (
+                            <Grid
+                                item
+                                xs={12}
+                                md={6}
                             >
-                                <Avatar>
-                                    <ReceiptLongIcon />
-                                </Avatar>
-                                <Typography
-                                    variant="h6"
-                                    fontWeight="bold"
+                                <Paper
+                                    sx={{
+                                        p: 3,
+                                        borderRadius: 3,
+                                    }}
                                 >
-                                    العرض المقبول
-                                </Typography>
-                            </Box>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 1,
+                                            mb: 2,
+                                        }}
+                                    >
+                                        <Avatar>
+                                            <StarIcon />
+                                        </Avatar>
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight="bold"
+                                        >
+                                            التقييم
+                                        </Typography>
 
-                            <Divider
-                                sx={{
-                                    mb: 2,
-                                }}
-                            />
-
-                            <Typography>
-                                السعر:
-                                50$
-                            </Typography>
-
-                            <Typography>
-                                التنفيذ
-                                خلال
-                                يوم
-                            </Typography>
-                        </Paper>
-                    </Grid>
-
+                                    </Box>
+                                    <Divider sx={{ mb: 2 }} />
+                                    <Rating
+                                        value={order.ratingValue}
+                                        readOnly
+                                    />
+                                    <Typography
+                                        sx={{ mt: 1, }}
+                                        color="text.secondary"
+                                    >
+                                        {
+                                            new Date(
+                                                order.ratingCreatedAt
+                                            ).toLocaleDateString("ar-EG")
+                                        }
+                                    </Typography>
+                                </Paper>
+                            </Grid>
+                        )
+                    }
                 </Grid>
             </DialogContent>
         </Dialog>

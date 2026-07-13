@@ -58,7 +58,7 @@ function CustomTable({
                 <TableBody>
                     {rows.length === 0 ? (
                         <TableRow 
-                        className=".custom-table-row"
+                        className="custom-table-row"
                         >
                             <TableCell
                                 colSpan={columns.length + 1}
@@ -76,7 +76,7 @@ function CustomTable({
                             <TableRow
                                 key={row.id}
                                 hover
-                                className=".custom-table-row"
+                                className="custom-table-row"
 
                             >
                                 {columns.map((column) => (

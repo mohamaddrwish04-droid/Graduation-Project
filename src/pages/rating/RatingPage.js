@@ -15,7 +15,6 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { getSpecializations } from "../../services/specializationService";
 import { useTranslation } from "react-i18next";
-import { combine } from "stylis";
 
 function RatingsPage() {
     const [snackbar, setSnackbar] = useState({
@@ -108,7 +107,7 @@ function RatingsPage() {
         try {
             setLoading(true);
             const data = await getOrders();
-            setorders(data);
+            setorders(data.items);
         } catch {
             setSnackbar({
                 open: true,

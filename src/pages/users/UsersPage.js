@@ -5,153 +5,57 @@ import SearchInput from "../../components/common/SearchInput";
 import FilterSelect from "../../components/common/FilterSelect";
 import CustomTable from "../../components/tables/CustomTable";
 import UserDetailsDialog from "./UserDetailsDialog";
-import { getUsers, getProviders } from "../../services/userService";
-
 import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
-
+import { useUserPage } from "./useUserPage";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Box } from "@mui/system";
-
-import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../context/AuthContext";
 
 
 
 
 
 export default function UsersPage() {
+    const {user} = useAuth();
+    console.log(user);
 
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const {
+        search, setSearch, roleFilter,
+        setRoleFilter, statusFilter, setStatusFilter,
+        open, setOpen, selectedUser, filteredUsers, totalUsers,
+        customers, providers, handleViewDetails
+    } = useUserPage();
+
     const { t } = useTranslation();
-    const [search, setSearch] = useState("");
-    const [roleFilter, setRoleFilter] = useState("all");
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [open, setOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
 
-    const handleViewDetails = (user) => {
-        setSelectedUser(user);
-        setOpen(true);
-    };
-    const totalUsers = users.length;
 
-    const customers =
-        users.filter(
-            (u) => !u.hasProviderProfile
-        ).length;
-
-    const providers =
-        users.filter(
-            (u) => u.hasProviderProfile
-        ).length;
-
-    const loadUsers = async () => {
-        try {
-            setLoading(true);
-
-            const usersData =
-                await getUsers();
-
-            const providersData =
-                await getProviders();
-
-            const mergedUsers =
-                usersData
-                    .filter(
-                        (u) => u.role !== 1
-                    )
-                    .map((user) => ({
-                        ...user,
-
-                        provider:
-                            providersData.find(
-                                (p) =>
-                                    p.userId ===
-                                    user.id
-                            ) || null,
-                    }));
-
-            setUsers(mergedUsers);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadUsers();
-    }, []);
-
-    const filteredUsers =
-        users.filter((user) => {
-
-            const matchesSearch =
-                user.fullName
-                    .toLowerCase()
-                    .includes(
-                        search.toLowerCase()
-                    );
-
-            const matchesRole =
-                roleFilter === "all"
-                    ? true
-                    : roleFilter ===
-                        "provider"
-                        ? user.hasProviderProfile
-                        : !user.hasProviderProfile;
-
-            const matchesStatus =
-                statusFilter === "all"
-                    ? true
-                    : statusFilter ===
-                        "verified"
-                        ? user.isEmailVerified
-                        : !user.isEmailVerified;
-
-            return (
-                matchesSearch &&
-                matchesRole &&
-                matchesStatus
-            );
-        });
-    const formattedUsers = filteredUsers.map(
-        (user) => ({
-            ...user,
-            status: user.isEmailVerified
-                ? (<CheckCircleIcon color="success" fontSize="small" />)
-                : (<CancelIcon color="error" fontSize="small" />)
-        })
-    );
     const columns = [
-    {
-        field: "fullName",
-        header: t("name"),
-    },
-    {
-        field: "email",
-        header: t("email"),
-    },
-    {
-        field: "phoneNumber",
-        header: t("phone"),
-    },
-    {
-        field: "isEmailVerified",
-        header: t("status"),
-    },
-    {
-        field: "createdAt",
-        header: t("created at"),
-    },
-];
+        {
+            field: "fullName",
+            header: t("name"),
+        },
+        {
+            field: "email",
+            header: t("email"),
+        },
+        {
+            field: "phoneNumber",
+            header: t("phone"),
+        },
+        {
+            field: "isEmailVerified",
+            header: t("status"),
+        },
+        {
+            field: "createdAt",
+            header: t("created at"),
+        },
+    ];
 
     return (
         <div>
@@ -235,7 +139,7 @@ export default function UsersPage() {
                                 handleViewDetails(row)
                             }
                         >
-                           {t("view details")}
+                            {t("view details")}
                         </Button>
                     )
                 )}

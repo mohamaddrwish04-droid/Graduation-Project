@@ -6,6 +6,7 @@
     align-items: center;
     border-radius: 16px;
     background: rgba(47,107,255,0.12);
+    border: double 1px blue;
 }
 
 #icon-container svg {
@@ -31,9 +32,13 @@
     box-shadow: 0 8px 25px rgba(47,107,255,0.12);
     transition: all 0.3s ease;
     cursor: pointer;
+    border-top: solid 5px rgba(57, 57, 112, 0.728);
 }
 
 #stat-card:hover {
     transform: translateY(-4px) scale(1.03);
     box-shadow: 0px 4px 20px rgba(47,107,255,0.2);
 }
+
+
+

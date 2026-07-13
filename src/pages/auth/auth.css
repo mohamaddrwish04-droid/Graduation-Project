@@ -1,0 +1,57 @@
+#Box-container {
+    display: flex;
+    overflow: hidden;
+    min-height: 100vh;
+    background: #0F111A;
+}
+
+#Left-Side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0F111A, #1A1D2E);
+    position: relative;
+    flex-direction: column;
+}
+
+#glow-1 {
+    width: 350;
+    height: 350;
+    position: absolute;
+    top: -50;
+    left: -50;
+    opacity: 0.3;
+    border-radius: 50%;
+    background: #2F6BFF;
+    filter: blur(120px);
+}
+
+#glow-2 {
+    position: absolute;
+    width: 300;
+    height: 300;
+    border-radius: 50%;
+    background: #6C63FF;
+    filter: blur(120px);
+    opacity: 0.3;
+    bottom: -50;
+    right: -50;
+}
+
+#right-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+#paper {
+    width: 500px;
+    border-radius: 1;
+    background: rgba(26, 29, 46, .95);
+    border: 1px solid rgba(255, 255, 255, .08);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+}

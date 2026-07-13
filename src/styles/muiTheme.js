@@ -61,7 +61,7 @@ const getTheme = (mode, direction = "ltr") => createTheme({
     },
 
     typography: {
-        fontFamily: "'Cairo', sans-serif",
+        fontFamily: 'Cairo, sans-serif',
 
         h1: {
             fontWeight: 700,
