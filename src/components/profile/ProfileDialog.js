@@ -7,7 +7,9 @@ import {
     Box,
     Divider,
     Button,
-    CircularProgress
+    CircularProgress,
+    Snackbar,
+    Alert,
 } from "@mui/material";
 import { buildImageUrl } from "../../utils/buildImageUrl"
 import { useEffect, useState } from "react";
@@ -23,10 +25,13 @@ export default function ProfileDialog({
 }) {
 
     const [uploading, setUploading] = useState(false);
-    const [error, setError] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
-    const [success, setSuccess] = useState("");
     const { updateUser } = useAuth();
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: "",
+        severity: "success",
+    });
 
 
     const handleUploadImage = async () => {
@@ -36,30 +41,19 @@ export default function ProfileDialog({
         try {
 
             setUploading(true);
-
-            await uploadProfileImage(
-                selectedFile
-            );
-
-            const updatedUser =
-                await getCurrentUser();
-
+            await uploadProfileImage(selectedFile);
+            const updatedUser = await getCurrentUser();
             updateUser(updatedUser);
-
             setSelectedFile(null);
-
-            setSuccess(
-                "تم رفع الصورة بنجاح"
-            );
-
+            setSnackbar({
+                open: true, message:  "تم رفع الصورة بنجاح", severity: "success",
+            })
         } catch {
-
-            setError(
-                "فشل رفع الصورة"
-            );
+            setSnackbar({
+                open: true, message: "فشل رفع الصورة", severity: "error",
+            })
 
         } finally {
-
             setUploading(false);
         }
     };
@@ -70,6 +64,9 @@ export default function ProfileDialog({
             onClose={onClose}
             maxWidth="xs"
             fullWidth
+            sx={{
+                textAlign: "center"
+            }}
         >
             <DialogTitle>
                 معلومات الحساب
@@ -110,7 +107,7 @@ export default function ProfileDialog({
                     </Typography>
                 </Box>
 
-                <Divider sx={{ mb: 2 }} />
+                <Divider sx={{ mb: 2, }} />
 
                 <Typography>
                     رقم المستخدم:
@@ -164,6 +161,27 @@ export default function ProfileDialog({
                     )}
                 </Button>
             </DialogContent>
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={3000}
+                onClose={() =>
+                    setSnackbar({
+                        ...snackbar,
+                        open: false,
+                    })
+                }
+            >
+                <Alert
+                    severity={
+                        snackbar.severity
+                    }
+                    variant="filled"
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
+
         </Dialog>
     );
 }

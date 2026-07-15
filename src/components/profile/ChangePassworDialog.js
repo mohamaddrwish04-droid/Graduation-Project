@@ -5,46 +5,66 @@ import {
     TextField,
     Button,
     Box,
+    Snackbar,
+    Alert
 } from "@mui/material";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import {
-    changePassword,
-} from "../../services/authService";
+import { changePassword, } from "../../services/authService";
 
 export default function ChangePasswordDialog({
     open,
     onClose,
 }) {
 
-    const [
-        currentPassword,
-        setCurrentPassword,
-    ] = useState("");
+    const [currentPassword, setCurrentPassword,] = useState("");
+    const [newPassword, setNewPassword,] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: "",
+        severity: "success",
+    });
 
-    const [
-        newPassword,
-        setNewPassword,
-    ] = useState("");
 
-    const handleSubmit =
-        async () => {
-
-            try {
-
-                await changePassword(
-                    currentPassword,
-                    newPassword
-                );
-
+    const handleSubmit = async () => {
+        if (newPassword !== confirmPassword) {
+            setSnackbar({
+                open: true,
+                message: "كلمتا المرور غير متطابقتين",
+                severity: "warning",
+            });
+            return;
+        }
+        try {
+            await changePassword(
+                currentPassword,
+                newPassword
+            );
+            setConfirmPassword("");
+            setNewPassword();
+            setCurrentPassword();
+            setTimeout(()=>{
                 onClose();
+            },5000);
+            setSnackbar({
+                open: true,
+                message: "تم تغيير كلمة المرور بنجاح",
+                severity: "success",
+            });
+        } catch (error) {
+            setSnackbar({
+                open: true,
+                message:
+                    error?.message ||
+                    "فشل تغيير كلمة المرور",
+                severity: "error",
+            });
+        } finally {
 
-            } catch (error) {
-
-                console.error(error);
-            }
-        };
+        }
+    };
 
     return (
         <Dialog
@@ -52,6 +72,7 @@ export default function ChangePasswordDialog({
             onClose={onClose}
             maxWidth="xs"
             fullWidth
+            sx={{ textAlign: "center" }}
         >
             <DialogTitle>
                 تغيير كلمة المرور
@@ -86,6 +107,18 @@ export default function ChangePasswordDialog({
                         )
                     }
                 />
+                <TextField
+                    fullWidth
+                    margin="normal"
+                    label="تأكيد كلمة المرور"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) =>
+                        setConfirmPassword(
+                            e.target.value
+                        )
+                    }
+                />
 
                 <Box
                     sx={{
@@ -104,6 +137,26 @@ export default function ChangePasswordDialog({
                 </Box>
 
             </DialogContent>
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={3000}
+                onClose={() =>
+                    setSnackbar({
+                        ...snackbar,
+                        open: false,
+                    })
+                }
+            >
+                <Alert
+                    severity={
+                        snackbar.severity
+                    }
+                    variant="filled"
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Dialog>
     );
 }
