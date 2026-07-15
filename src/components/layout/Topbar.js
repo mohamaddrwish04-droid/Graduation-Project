@@ -5,8 +5,18 @@ import {
   Typography,
   Button,
   Badge,
+  Divider
 } from "@mui/material";
-
+import {
+  Menu,
+  MenuItem,
+  ListItemIcon,
+} from "@mui/material";
+import LockResetIcon from '@mui/icons-material/LockReset';
+import PersonIcon from '@mui/icons-material/Person';
+import ProfileDialog from "../profile/ProfileDialog";
+import ChangePasswordDialog from "../profile/ChangePassworDialog";
+import { buildImageUrl } from "../../utils/buildImageUrl"
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useEffect, useState } from "react";
@@ -30,6 +40,19 @@ export default function Topbar() {
   const { mode, toggleTheme } = useThemeContext();
   const { language, changeLanguage } = useLanguage();
   const [dateTime, setDateTime] = useState(new Date());
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] =useState(false);
+
+  const open = Boolean(anchorEl);
+
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -120,27 +143,98 @@ export default function Topbar() {
         }}
       >
         <Chip id="user-chip"
-          label={user.name}
+          label={user.fullName}
           color="primary"
         />
 
-        <Avatar id="user-avatar">
-          {user.name?.charAt(0).toUpperCase()}
+
+
+        <Avatar
+          id="user-avatar"
+          onClick={handleOpenMenu}
+          sx={{
+            cursor: "pointer",
+            width: 42,
+            height: 42,
+          }}
+          src={
+            buildImageUrl(
+              user?.profileImageUrl
+            )}
+        >
+          {!user?.profileImageUrl &&
+            user?.fullName?.charAt(0).toUpperCase()}
         </Avatar>
 
-        <Button
-          id="logout-button"
-          onClick={handleLogout}
-          startIcon={<LogoutIcon />}
-          sx={{
-            px: 1.5,
-            py: 0.7,
-            color: "error.main",
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleCloseMenu}
+          transformOrigin={{
+            horizontal: "right",
+            vertical: "top",
+          }}
+          anchorOrigin={{
+            horizontal: "right",
+            vertical: "bottom",
           }}
         >
-          {t("logout")}
-        </Button>
+          <MenuItem
+            onClick={() => {
+              setProfileOpen(true);
+              handleCloseMenu();
+            }}
+          >
+            <ListItemIcon>
+              <PersonIcon fontSize="small" />
+            </ListItemIcon>
+
+            عرض البروفايل
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              setPasswordOpen(true);
+              handleCloseMenu();
+            }}
+          >
+            <ListItemIcon>
+              <LockResetIcon fontSize="small" />
+            </ListItemIcon>
+
+            تغيير كلمة المرور
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              handleLogout();
+              handleCloseMenu();
+            }}
+          >
+            <ListItemIcon>
+              <LogoutIcon fontSize="small" />
+            </ListItemIcon>
+
+           تسجيل الخروج
+          </MenuItem>
+        </Menu>
+
+
       </Box>
-    </Box>
+      <ProfileDialog
+        open={profileOpen}
+        onClose={() =>
+          setProfileOpen(false)
+        }
+        user={user}
+      />
+
+      <ChangePasswordDialog
+        open={passwordOpen}
+        onClose={() =>
+          setPasswordOpen(false)
+        }
+      />
+    </Box >
   );
 }

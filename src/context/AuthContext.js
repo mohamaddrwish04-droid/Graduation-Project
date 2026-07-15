@@ -1,52 +1,15 @@
 import { createContext, useContext, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { getCurrentUser } from "../services/profileService";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(() => {
         const storedUser = localStorage.getItem("user");
-        return storedUser ? JSON.parse(storedUser): null;
+        return storedUser ? JSON.parse(storedUser) : null;
     });
 
-    const login = (authData) => {
-
-        const decoded = jwtDecode(authData.accessToken);
-
-        const userData = {
-            accessToken:
-                authData.accessToken,
-
-            refreshToken:
-                authData.refreshToken,
-
-            userId:
-                decoded[
-                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-                ],
-
-            name:
-                decoded[
-                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
-                ],
-
-            email:
-                decoded[
-                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-                ],
-
-            role:
-                decoded[
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-                ],
-        };
-
-        setUser(userData);
-
-        localStorage.setItem(
-            "user",
-            JSON.stringify(userData)
-        );
+    const login = async (authData) => {
 
         localStorage.setItem(
             "accessToken",
@@ -57,10 +20,32 @@ export function AuthProvider({ children }) {
             "refreshToken",
             authData.refreshToken
         );
+
+        const currentUser = await getCurrentUser();
+
+        const userData = {
+            accessToken: authData.accessToken,
+            refreshToken: authData.refreshToken,
+
+            userId: currentUser.userId,
+            fullName: currentUser.fullName,
+            email: currentUser.email,
+            phoneNumber: currentUser.phoneNumber,
+            role: currentUser.role,
+            profileImageUrl: currentUser.profileImageUrl,
+        };
+
+        setUser(userData);
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(userData)
+        );
     };
 
     const logout = () => {
         setUser(null);
+
         localStorage.removeItem("user");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -80,4 +65,5 @@ export function AuthProvider({ children }) {
         </AuthContext.Provider>
     );
 }
+
 export const useAuth = () => useContext(AuthContext);

@@ -56,11 +56,6 @@ const navItems = [
         path: "/ratings",
         icon: <StarIcon />,
     },
-    {
-        text: "settings",
-        path: "/settings",
-        icon: <SettingsIcon />,
-    },
 ];
 
 function Sidebar() {

@@ -19,8 +19,8 @@ import CommentIcon from "@mui/icons-material/Comment";
 import Typography from '@mui/material/Typography';
 import { useSubscriptionPage } from "./useSubscriptionPage";
 import { useTranslation } from "react-i18next";
-import {buildImageUrl} from "../../utils/buildImageUrl"
-
+import { buildImageUrl } from "../../utils/buildImageUrl"
+import {TablePagination} from "@mui/material";
 export default function SubscriptionPage() {
     const {
         handleApprove, handleReject, handleShowImage,
@@ -33,7 +33,8 @@ export default function SubscriptionPage() {
         openReasonDialog, setOpenReasonDialog,
         openRejectDialog, setOpenRejectDialog,
         adminNote, setAdminNote,
-        openTransactionDialog, setOpenTransactionDialog, plans
+        openTransactionDialog, setOpenTransactionDialog, plans,
+        page,setPage,handleRowsPerPageChange,rowsPerPage
     } = useSubscriptionPage();
 
     const { t } = useTranslation();
@@ -241,6 +242,34 @@ export default function SubscriptionPage() {
                 columns={columns}
                 rows={filteredRequests}
                 actions={tableActions}
+            />
+            <TablePagination
+                component="div"
+                count={filteredRequests.length}
+                page={page}
+                onPageChange={(event, newPage) =>
+                    setPage(newPage)
+                }
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                rowsPerPageOptions={[10, 25, 50, 100]}
+                labelRowsPerPage="عدد العناصر:"
+                sx={{
+                    borderTop:
+                        "1px solid rgba(255,255,255,0.08)",
+
+                    "& .MuiTablePagination-toolbar": {
+                        color: "text.primary",
+                    },
+
+                    "& .MuiIconButton-root": {
+                        color: "text.primary",
+                    },
+
+                    "& .MuiSelect-select": {
+                        color: "text.primary",
+                    },
+                }}
             />
 
             <Dialog

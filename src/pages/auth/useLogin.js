@@ -17,26 +17,18 @@ export function useLogin() {
     const handleLogin = async (e) => {
         try {
             e.preventDefault();
+
             setLoading(true);
-            const user = await loginRequest(email, password);
-            const decoded = jwtDecode(
-                user.accessToken
+
+            const authData = await loginRequest(
+                email,
+                password
             );
 
-            const role =
-                decoded[
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-                ];
-
-            if (role !== "Admin") {
-                throw new Error(
-                    "ليس لديك صلاحية الدخول إلى لوحة التحكم"
-                );
-            }
-
-            login(user);
+            await login(authData);
 
             navigate("/dashboard");
+
         } catch (err) {
             setError(err.message);
         } finally {
@@ -48,6 +40,6 @@ export function useLogin() {
         navigate, login, email, setEmail,
         password, setPassword, showPassword,
         setShowPassword, loading, setLoading,
-        error, setError ,handleLogin
+        error, setError, handleLogin
     }
 }

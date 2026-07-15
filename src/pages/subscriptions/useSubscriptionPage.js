@@ -22,6 +22,8 @@ export function useSubscriptionPage() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [planFilter, setPlanFilter] = useState("all");
     const [plans, setPlans] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const totalRequests = requests.length;
     const pendingRequests = requests.filter(
@@ -114,6 +116,21 @@ export function useSubscriptionPage() {
         setSelectedRequest(row.proofImageUrl);
         setOpenImageDialog(true);
     };
+    const paginatedRequest = filteredRequests.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+    );
+    useEffect(() => {
+        setPage(0);
+    }, [
+        search,
+        statusFilter,
+        plans,
+    ]);
+    const handleRowsPerPageChange = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     return {
         handleApprove, handleReject, handleShowImage,
@@ -126,7 +143,8 @@ export function useSubscriptionPage() {
         openReasonDialog, setOpenReasonDialog,
         openRejectDialog, setOpenRejectDialog,
         openTransactionDialog, setOpenTransactionDialog, plans,
-        adminNote,setAdminNote
+        adminNote, setAdminNote,handleRowsPerPageChange,paginatedRequest,
+        page,setPage,rowsPerPage
     }
 
 

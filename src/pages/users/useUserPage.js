@@ -10,6 +10,8 @@ export function useUserPage() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [open, setOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const handleViewDetails = (user) => {
         setSelectedUser(user);
@@ -86,10 +88,20 @@ export function useUserPage() {
         (u) => u.hasProviderProfile
     ).length;
 
+    const paginatedUser = filteredUsers.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+    );
+    const handleRowsPerPageChange = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
     return {
         loading, search, setSearch, roleFilter,
         setRoleFilter, statusFilter, setStatusFilter,
         open, setOpen, selectedUser, filteredUsers, totalUsers,
-        customers, providers, handleViewDetails
+        customers, providers, handleViewDetails, page, setPage,
+        handleRowsPerPageChange, paginatedUser, rowsPerPage
     }
 }

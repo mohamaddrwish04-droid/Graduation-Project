@@ -10,7 +10,6 @@ import RatingPage from "../pages/rating/RatingPage";
 import ProtectedRoute from "./ProtectedRoute";
 import ForgotPassword from "../pages/auth/ForgotPassowrd";
 import ResetPassword from "../pages/auth/ResetPassword";
-import SettingPage from "../pages/setting/SettingPage";
 
 function AppRoutes() {
     return (
@@ -53,10 +52,6 @@ function AppRoutes() {
                 <Route
                     path="/ratings"
                     element={<RatingPage />}
-                />
-                <Route
-                    path="/settings"
-                    element={<SettingPage />}
                 />
             </Route>
         </Routes>

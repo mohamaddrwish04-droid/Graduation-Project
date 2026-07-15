@@ -15,20 +15,21 @@ import { Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
-
+import{TablePagination} from "@mui/material"
 
 
 
 
 export default function UsersPage() {
-    const {user} = useAuth();
+    const { user } = useAuth();
     console.log(user);
 
     const {
         search, setSearch, roleFilter,
         setRoleFilter, statusFilter, setStatusFilter,
         open, setOpen, selectedUser, filteredUsers, totalUsers,
-        customers, providers, handleViewDetails
+        customers, providers, handleViewDetails, page, setPage,
+        handleRowsPerPageChange, rowsPerPage
     } = useUserPage();
 
     const { t } = useTranslation();
@@ -144,6 +145,36 @@ export default function UsersPage() {
                     )
                 )}
             />
+            <TablePagination
+                component="div"
+                count={filteredUsers.length}
+                page={page}
+                onPageChange={(event, newPage) =>
+                    setPage(newPage)
+                }
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                rowsPerPageOptions={[10, 25, 50, 100]}
+                labelRowsPerPage="عدد العناصر:"
+                sx={{
+                    borderTop:
+                        "1px solid rgba(255,255,255,0.08)",
+
+                    "& .MuiTablePagination-toolbar": {
+                        color: "text.primary",
+                    },
+
+                    "& .MuiIconButton-root": {
+                        color: "text.primary",
+                    },
+
+                    "& .MuiSelect-select": {
+                        color: "text.primary",
+                    },
+                }}
+            />
+
+
             <UserDetailsDialog
                 open={open}
                 onClose={() => setOpen(false)}
