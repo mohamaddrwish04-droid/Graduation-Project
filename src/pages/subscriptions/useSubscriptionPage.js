@@ -111,7 +111,7 @@ export function useSubscriptionPage() {
         setOpenReasonDialog(true);
     };
     const handleShowImage = (row) => {
-        setSelectedRequest(row);
+        setSelectedRequest(row.proofImageUrl);
         setOpenImageDialog(true);
     };
 

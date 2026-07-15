@@ -3,7 +3,6 @@ import Login from "../pages/auth/Login";
 import DashboardHome from "../pages/dashboard/DashboardHome";
 import DashboardLayout from "../layouts/DashboardLayout";
 import UsersPage from "../pages/users/UsersPage";
-import OrdersPage from "../pages/orders/OrdersPage";
 import SubscriptionPage from "../pages/subscriptions/SubscriptionsPage";
 import SpecializationsPage from "../pages/specializations/SpecializationsPage";
 import SubscriptionPlans from "../pages/subscriptionPlan/SubscriptionPlans";
@@ -34,11 +33,6 @@ function AppRoutes() {
                 <Route
                     path="/users"
                     element={<UsersPage />}
-                />
-
-                <Route
-                    path="/orders"
-                    element={<OrdersPage />}
                 />
 
                 <Route

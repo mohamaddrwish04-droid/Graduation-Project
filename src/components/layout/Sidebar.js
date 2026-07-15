@@ -15,7 +15,6 @@ import {
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import CategoryIcon from "@mui/icons-material/Category";
-import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentIcon from "@mui/icons-material/Payment";
 import StarIcon from "@mui/icons-material/Star";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -41,11 +40,7 @@ const navItems = [
         path: "/specializations",
         icon: <CategoryIcon />,
     },
-    {
-        text: "orders",
-        path: "/orders",
-        icon: <ReceiptIcon />,
-    },
+
     {
         text: "subscriptions",
         path: "/subscriptions",
@@ -93,7 +88,7 @@ function Sidebar() {
                     component="img"
                     src={"/logo.png"}
                     alt="logo"
-                    id = "sidebar-logo"
+                    id="sidebar-logo"
                 />
                 <Box>
 
@@ -113,24 +108,14 @@ function Sidebar() {
                         key={item.text}
                         component={NavLink}
                         to={item.path}
-                        sx={{
-                            borderRadius: "12px",
-                            mb: 0.5,
-                            color: "text.primary",
-                            "&.active": {
-                                backgroundColor: "rgba(47,107,255,0.18)",
-                                border: "1px solid rgba(47,107,255,0.25)",
-                            },
-                            "&:hover": {
-                                backgroundColor: "rgba(255,255,255,0.05)",
-                            },
-                        }}>
+                        sx={{mb: 0.5,}}
+                        >
                         <ListItemIcon
                             sx={{
                                 color: "inherit",
                                 minWidth: "40px",
                                 "& svg": {
-                                    fontSize: "25px",
+                                    fontSize: "20px",
                                 },
                             }} >
                             {item.icon}

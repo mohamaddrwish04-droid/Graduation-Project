@@ -19,19 +19,20 @@ import CommentIcon from "@mui/icons-material/Comment";
 import Typography from '@mui/material/Typography';
 import { useSubscriptionPage } from "./useSubscriptionPage";
 import { useTranslation } from "react-i18next";
+import {buildImageUrl} from "../../utils/buildImageUrl"
 
 export default function SubscriptionPage() {
-    const{
+    const {
         handleApprove, handleReject, handleShowImage,
         handleShowTransaction, handleShowReason, handleOpenReject,
-         approvedRequests, rejectedRequests, pendingRequests,
-        totalRequests, filteredRequests, 
+        approvedRequests, rejectedRequests, pendingRequests,
+        totalRequests, filteredRequests,
         search, setSearch, planFilter, setPlanFilter,
-        statusFilter, setStatusFilter, selectedRequest, 
+        statusFilter, setStatusFilter, selectedRequest,
         openImageDialog, setOpenImageDialog,
         openReasonDialog, setOpenReasonDialog,
         openRejectDialog, setOpenRejectDialog,
-        adminNote,setAdminNote,
+        adminNote, setAdminNote,
         openTransactionDialog, setOpenTransactionDialog, plans
     } = useSubscriptionPage();
 
@@ -110,51 +111,33 @@ export default function SubscriptionPage() {
                         handleShowTransaction(row)
                     }
                 >
-
                     <KeyIcon />
-
                 </IconButton>
-
             </Tooltip>
-
-
             <Tooltip title="الإيصال">
-
                 <IconButton
                     disabled={!row.proofImageUrl}
                     onClick={() =>
                         handleShowImage(row)
                     }
                 >
-
                     <ImageIcon />
-
                 </IconButton>
-
             </Tooltip>
-
-
             {
                 row.status === 2 && (
-
                     <Tooltip title="سبب الرفض">
-
                         <IconButton
                             color="warning"
                             onClick={() =>
                                 handleShowReason(row)
                             }
                         >
-
                             <CommentIcon />
-
                         </IconButton>
-
                     </Tooltip>
-
                 )
             }
-
         </Box>
     );
 
@@ -341,6 +324,38 @@ export default function SubscriptionPage() {
                 setAdminNote={setAdminNote}
                 onSubmit={handleReject}
             />
+
+            <Dialog
+                open={openImageDialog}
+                onClose={() =>
+                    setOpenImageDialog(false)
+                }
+                maxWidth="md"
+            >
+                <DialogTitle>
+                    صورة إثبات الدفع
+                </DialogTitle>
+
+                <DialogContent>
+
+                    {selectedRequest && (
+                        <Box
+                            component="img"
+                            src={buildImageUrl(
+                                selectedRequest
+                            )}
+                            alt="proof"
+                            sx={{
+                                width: "100%",
+                                maxHeight: "70vh",
+                                objectFit: "contain",
+                                borderRadius: 2,
+                            }}
+                        />
+                    )}
+
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

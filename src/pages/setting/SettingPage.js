@@ -1,376 +1,350 @@
-
-
-
-
 import {
     Box,
     Paper,
     Typography,
     Avatar,
-    Button,
-    Divider,
+    Stack,
     Switch,
-    FormControlLabel,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
+    Grid,
+    Chip,
     TextField,
-    IconButton,
 } from "@mui/material";
 
-import {
-    Person,
-    Lock,
-    Logout,
-    Close,
-} from "@mui/icons-material";
-
-import { useState } from "react";
-
-import { useAuth } from "../../context/AuthContext";
-import { useThemeContext } from "../../context/ThemeContext";
+import { useEffect, useState } from "react";
+import { buildImageUrl } from "../../utils/buildImageUrl";
+import { uploadProfileImage, } from "../../services/profileService";
+import { Button, CircularProgress, } from "@mui/material";
+import PageHeader from "../../components/common/PageHeader"
 import { useLanguage } from "../../context/LanguageContext";
+import { getCurrentUser } from "../../services/profileService";
+import { useThemeContext } from "../../context/ThemeContext";
+import { useAuth } from "../../context/AuthContext";
 
-import { changePassword } from "../../services/authService";
+
 
 export default function SettingsPage() {
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [user, setUser] = useState(null);
+    const [success, setSuccess] = useState("");
+    const { language, changeLanguage } = useLanguage();
+    const { mode, toggleTheme } = useThemeContext();
+    const { logout } = useAuth();
 
-    const { user, logout } = useAuth();
+    const [error, setError] = useState("");
 
-    const { mode, toggleTheme } =
-        useThemeContext();
+    useEffect(() => {
 
-    const {
-        language,
-        changeLanguage,
-    } = useLanguage();
+        const loadUser =
+            async () => {
 
-    const [openDialog, setOpenDialog] =
-        useState(false);
+                try {
 
-    const [currentPassword,
-        setCurrentPassword] =
-        useState("");
+                    const data =
+                        await getCurrentUser();
 
-    const [newPassword,
-        setNewPassword] =
-        useState("");
+                    setUser(data);
 
-    const [confirmPassword,
-        setConfirmPassword] =
-        useState("");
+                } catch (error) {
+                    console.error(error);
+                }
+            };
 
-    const handleChangePassword =
-        async () => {
+        loadUser();
 
-            if (
-                newPassword !==
-                confirmPassword
-            ) {
-                alert(
-                    "كلمتا المرور غير متطابقتين"
-                );
-                return;
-            }
+    }, []);
 
-            try {
+    const handleUploadImage = async () => {
 
-                await changePassword(
-                    currentPassword,
-                    newPassword
-                );
+        if (!selectedFile) {
+            return;
+        }
 
-                alert(
-                    "تم تغيير كلمة المرور بنجاح"
-                );
+        try {
 
-                setOpenDialog(false);
+            setUploading(true);
+            await uploadProfileImage(selectedFile);
+            const updatedUser = await getCurrentUser();
+            setUser(updatedUser);
+            setSelectedFile(null);
+            setSuccess(
+                "تم رفع الصورة بنجاح"
+            );
 
-                setCurrentPassword("");
-                setNewPassword("");
-                setConfirmPassword("");
+        } catch (error) {
 
-            } catch (error) {
-                alert(error.message);
-            }
-        };
+            console.log(error);
+
+            console.log(error.response);
+
+            console.log(error.response?.data);
+
+            setError(
+                error.response?.data ||
+                "فشل رفع الصورة"
+            );
+        } finally {
+
+            setUploading(false);
+        }
+    };
 
     return (
-        <Box>
+        <Box
+            sx={{
+                maxWidth: 1200,
+                mx: "auto",
+            }}
+        >
 
-            <Typography
-                variant="h4"
-                fontWeight="bold"
-                mb={3}
-            >
-                الإعدادات
-            </Typography>
+            <PageHeader
+                title="الإعدادات"
+                subtitle="إدارة الحساب والتفضيلات"
+            />
 
-            <Paper
-                sx={{
-                    p: 3,
-                    mb: 3,
-                    borderRadius: 3,
-                }}
+            <Grid
+                container
+                spacing={3}
             >
-                <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={2}
+
+                <Grid
+                    item
+                    xs={12}
+                    md={5}
                 >
-                    <Avatar
+                    {/* Profile Card */}
+                    <Paper
                         sx={{
-                            width: 70,
-                            height: 70,
+                            p: 4,
+                            borderRadius: 4,
+                            height: "100%",
                         }}
                     >
-                        <Person />
-                    </Avatar>
 
-                    <Box>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                            }}
+                        >
+
+                            <Avatar
+                                src={buildImageUrl(
+                                    user?.profileImageUrl
+                                )}
+                                sx={{
+                                    width: 120,
+                                    height: 120,
+                                    mb: 2,
+                                }}
+                            >
+                                {user?.fullName?.charAt(0)}
+                            </Avatar>
+
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    gap: 2,
+                                    mb: 3,
+                                }}
+                            >
+
+                                <Button
+                                    component="label"
+                                    variant="outlined"
+                                >
+                                    اختيار صورة
+
+                                    <input
+                                        hidden
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) =>
+                                            setSelectedFile(
+                                                e.target.files[0]
+                                            )
+                                        }
+                                    />
+                                </Button>
+
+                                <Button
+                                    variant="contained"
+                                    disabled={
+                                        !selectedFile ||
+                                        uploading
+                                    }
+                                    onClick={
+                                        handleUploadImage
+                                    }
+                                >
+                                    {uploading ? (
+                                        <CircularProgress
+                                            size={20}
+                                        />
+                                    ) : (
+                                        "رفع الصورة"
+                                    )}
+                                </Button>
+
+                            </Box>
+
+                            <Typography
+                                variant="h5"
+                                sx={{ mt: 3 }}
+                            >
+                                {user?.fullName}
+                            </Typography>
+
+                            <Typography
+                                color="text.secondary"
+                            >
+                                {user?.email}
+                            </Typography>
+
+                            <Chip
+                                label={user?.role}
+                                color="primary"
+                                sx={{ mt: 2 }}
+                            />
+
+                        </Box>
+
+                    </Paper>
+                </Grid>
+
+                <Grid
+                    item
+                    xs={12}
+                    md={7}
+                >
+                    {/* Theme & Language */}
+                    <Paper
+                        sx={{
+                            p: 3,
+                            borderRadius: 4,
+                            mb: 3,
+                        }}
+                    >
+
                         <Typography
                             variant="h6"
-                            fontWeight="bold"
+                            mb={3}
                         >
-                            {user?.name}
+                            المظهر واللغة
                         </Typography>
 
-                        <Typography
-                            color="text.secondary"
-                        >
-                            {user?.email}
-                        </Typography>
+                        <Stack spacing={3}>
 
-                        <Typography
-                            color="primary"
-                        >
-                            {user?.role}
-                        </Typography>
-                    </Box>
-                </Box>
-            </Paper>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent:
+                                        "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Typography>
+                                    الوضع الداكن
+                                </Typography>
 
-            <Paper
-                sx={{
-                    p: 3,
-                    mb: 3,
-                    borderRadius: 3,
-                }}
-            >
-                <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    mb={2}
-                >
-                    المظهر واللغة
-                </Typography>
+                                <Switch
+                                    checked={
+                                        mode === "dark"
+                                    }
+                                    onChange={
+                                        toggleTheme
+                                    }
+                                />
+                            </Box>
 
-                <Divider sx={{ mb: 2 }} />
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent:
+                                        "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Typography>
+                                    اللغة العربية
+                                </Typography>
 
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={
-                                mode === "dark"
-                            }
-                            onChange={
-                                toggleTheme
-                            }
-                        />
-                    }
-                    label="الوضع الداكن"
-                />
+                                <Switch
+                                    checked={
+                                        language === "ar"
+                                    }
+                                    onChange={() =>
+                                        changeLanguage(
+                                            language === "ar"
+                                                ? "en"
+                                                : "ar"
+                                        )
+                                    }
+                                />
+                            </Box>
 
-                <Box mt={2}>
-                    <Button
-                        variant={
-                            language === "ar"
-                                ? "contained"
-                                : "outlined"
-                        }
-                        onClick={() =>
-                            changeLanguage(
-                                "ar"
-                            )
-                        }
-                    >
-                        العربية
-                    </Button>
+                        </Stack>
 
-                    <Button
-                        sx={{ ml: 2 }}
-                        variant={
-                            language === "en"
-                                ? "contained"
-                                : "outlined"
-                        }
-                        onClick={() =>
-                            changeLanguage(
-                                "en"
-                            )
-                        }
-                    >
-                        English
-                    </Button>
-                </Box>
-            </Paper>
-
-            <Paper
-                sx={{
-                    p: 3,
-                    mb: 3,
-                    borderRadius: 3,
-                }}
-            >
-                <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    mb={2}
-                >
-                    الأمان
-                </Typography>
-
-                <Divider sx={{ mb: 2 }} />
-
-                <Button
-                    startIcon={<Lock />}
-                    variant="contained"
-                    onClick={() =>
-                        setOpenDialog(true)
-                    }
-                >
-                    تغيير كلمة المرور
-                </Button>
-            </Paper>
-
-            <Paper
-                sx={{
-                    p: 3,
-                    borderRadius: 3,
-                }}
-            >
-                <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    mb={2}
-                >
-                    الجلسة
-                </Typography>
-
-                <Divider sx={{ mb: 2 }} />
-
-                <Button
-                    color="error"
-                    variant="contained"
-                    startIcon={<Logout />}
-                    onClick={logout}
-                >
-                    تسجيل الخروج
-                </Button>
-            </Paper>
-
-            <Dialog
-                open={openDialog}
-                onClose={() =>
-                    setOpenDialog(false)
-                }
-                maxWidth="sm"
-                fullWidth
-            >
-                <DialogTitle>
-
-                    تغيير كلمة المرور
-
-                    <IconButton
+                    </Paper>
+                    {/* Change Password */}
+                    <Paper
                         sx={{
-                            position:
-                                "absolute",
-                            right: 10,
-                            top: 10,
+                            p: 3,
+                            borderRadius: 4,
+                            mb: 3,
                         }}
-                        onClick={() =>
-                            setOpenDialog(
-                                false
-                            )
-                        }
                     >
-                        <Close />
-                    </IconButton>
 
-                </DialogTitle>
+                        <Typography
+                            variant="h6"
+                            mb={3}
+                        >
+                            تغيير كلمة المرور
+                        </Typography>
 
-                <DialogContent>
+                        <Stack spacing={2}>
 
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="كلمة المرور الحالية"
-                        type="password"
-                        value={
-                            currentPassword
-                        }
-                        onChange={(e) =>
-                            setCurrentPassword(
-                                e.target.value
-                            )
-                        }
-                    />
+                            <TextField
+                                label="كلمة المرور الحالية"
+                                type="password"
+                            />
 
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="كلمة المرور الجديدة"
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) =>
-                            setNewPassword(
-                                e.target.value
-                            )
-                        }
-                    />
+                            <TextField
+                                label="كلمة المرور الجديدة"
+                                type="password"
+                            />
 
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="تأكيد كلمة المرور"
-                        type="password"
-                        value={
-                            confirmPassword
-                        }
-                        onChange={(e) =>
-                            setConfirmPassword(
-                                e.target.value
-                            )
-                        }
-                    />
-
-                </DialogContent>
-
-                <DialogActions>
-
-                    <Button
-                        onClick={() =>
-                            setOpenDialog(
-                                false
-                            )
-                        }
+                            <TextField
+                                label="تأكيد كلمة المرور"
+                                type="password"
+                            />
+                            <Button
+                                variant="contained"
+                                size="large"
+                            >
+                                تغيير كلمة المرور
+                            </Button>
+                        </Stack>
+                    </Paper>
+                    {/* Logout */}
+                    <Paper
+                        sx={{
+                            p: 3,
+                            borderRadius: 4,
+                        }}
                     >
-                        إلغاء
-                    </Button>
-
-                    <Button
-                        variant="contained"
-                        onClick={
-                            handleChangePassword
-                        }
-                    >
-                        حفظ
-                    </Button>
-
-                </DialogActions>
-            </Dialog>
-
+                        <Button
+                            fullWidth
+                            color="error"
+                            variant="contained"
+                            onClick={logout}
+                        >
+                            تسجيل الخروج
+                        </Button>
+                    </Paper>
+                </Grid>
+            </Grid>
         </Box>
     );
 }

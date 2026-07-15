@@ -9,68 +9,13 @@ import StatCard from "../../components/cards/StatCard";
 import SearchInput from "../../components/common/SearchInput";
 import FilterSelect from "../../components/common/FilterSelect";
 import CustomTable from "../../components/tables/CustomTable";
-import { getOrders } from "../../services/orderService";
-import { useState, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { getSpecializations } from "../../services/specializationService";
 import { useTranslation } from "react-i18next";
+import { useRating } from "./useRating";
 
 function RatingsPage() {
-    const [snackbar, setSnackbar] = useState({
-        open: false,
-        severity: "success",
-        message: "",
-    });
-    const [orders, setorders] = useState([]);
-    const [specializationFilter, setspecializationsFilter] = useState("all");
-    const [specializations, setSpecializations] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [searchText, setSearchText] = useState("");
-    const [ratingFilter, setRatingFilter] = useState("all");
     const { t } = useTranslation();
-
-
-
-
-    const ratedOrders = orders.filter((o) => o.hasRating);
-
-    const tableRows = ratedOrders.filter((order) => {
-        const search = searchText.toLowerCase();
-        const matchesSearch =
-            order.customerName
-                .toLowerCase()
-                .includes(search) ||
-            order.selectedProviderName
-                .toLowerCase()
-                .includes(search);
-
-        const matchesSpecialization =
-            specializationFilter === "all" ||
-            order.specializationId ===
-            Number(specializationFilter);
-
-        const matchesRating =
-            ratingFilter === "all" ||
-            order.ratingValue === Number(ratingFilter);
-
-        return (
-            matchesSearch &&
-            matchesSpecialization &&
-            matchesRating
-        );
-    })
-        .map((order) => ({
-            id: order.id,
-            customerName: order.customerName,
-            providerName:
-                order.selectedProviderName,
-            specializationName:
-                order.specializationName,
-            ratingValue: order.ratingValue,
-            ratingCreatedAt:
-                order.ratingCreatedAt,
-        }));
     const columns = [
         {
             field: "id",
@@ -98,69 +43,38 @@ function RatingsPage() {
         },
     ];
 
-    useEffect(() => {
-        loadorders();
-        loadSpecializations();
-    }, []);
+    const {
+        lowRatings, totalRatings, fiveStars, averageRating,
+        searchText, setSearchText, ratingFilter, setRatingFilter,
+        specializationFilter, setspecializationsFilter,
+        specializations, snackbar, setSnackbar, ratedOrders,
+    } = useRating();
+    
+        const tableRows = ratedOrders.filter((order) => {
+        const search = searchText.toLowerCase();
+        const matchesSearch =
+            order.customerName
+                .toLowerCase()
+                .includes(search) ||
+            order.selectedProviderName
+                .toLowerCase()
+                .includes(search);
 
-    const loadorders = async () => {
-        try {
-            setLoading(true);
-            const data = await getOrders();
-            setorders(data.items);
-        } catch {
-            setSnackbar({
-                open: true,
-                severity: "error",
-                message:
-                    "فشل تحميل الخطط",
-            });
-        }finally{
-            setLoading(false);
-        }
-    };
-    const loadSpecializations = async () => {
-        try {
-            setLoading(true);
-            const data = await getSpecializations();
-            setSpecializations(data);
-        } catch {
-            setSnackbar({
-                open: true,
-                severity: "error",
-                message: "فشل تحميل التخصصات",
-            });
-        }finally{
-            setLoading(false);
-        }
-    };
-    const totalRatings = ratedOrders.length;
+        const matchesSpecialization =
+            specializationFilter === "all" ||
+            order.specializationId ===
+            Number(specializationFilter);
 
-    const averageRating =
-        ratedOrders.length > 0
-            ? (
-                ratedOrders.reduce(
-                    (sum, order) =>
-                        sum +
-                        order.ratingValue,
-                    0
-                ) /
-                ratedOrders.length
-            ).toFixed(1)
-            : 0;
+        const matchesRating =
+            ratingFilter === "all" ||
+            order.ratingValue === Number(ratingFilter);
 
-    const fiveStars =
-        ratedOrders.filter(
-            (order) =>
-                order.ratingValue === 5
-        ).length;
-
-    const lowRatings =
-        ratedOrders.filter(
-            (order) =>
-                order.ratingValue < 5
-        ).length;
-
+        return (
+            matchesSearch &&
+            matchesSpecialization &&
+            matchesRating
+        );
+    })
     return (
         <>
             <PageHeader
@@ -189,7 +103,7 @@ function RatingsPage() {
                 />
 
                 <StatCard
-                    title={t("five stars")} 
+                    title={t("five stars")}
                     value={fiveStars}
                     icon={<ThumbUpAltIcon />}
                 />

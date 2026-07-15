@@ -1,7 +1,8 @@
-// src/components/cards/StatCard.jsx
 
 import { Card, Box, Typography } from "@mui/material";
 import "./cards.css";
+
+
 function StatCard({ title, value, icon }) {
     return (
         <Card id="stat-card">

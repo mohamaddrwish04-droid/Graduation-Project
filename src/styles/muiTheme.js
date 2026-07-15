@@ -143,6 +143,24 @@ const getTheme = (mode, direction = "ltr") => createTheme({
                 },
             },
         },
+        MuiListItemButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: "12px",
+                    
+                    color: "text.primary",
+                    "&.active": {
+                        backgroundColor: "rgba(47,107,255,0.18)",
+                        border: "1px solid rgba(47,107,255,0.25)",
+                          borderBottom:"double 3px rgba(133, 156, 212, 0.55)"
+                    },
+                    "&:hover": {
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                      
+                    },
+                },
+            },
+        },
 
         MuiCard: {
             styleOverrides: {
