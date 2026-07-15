@@ -44,7 +44,7 @@ export default function SummaryCardsRow({ summary }) {
 
             <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <StatCard
-                    title={t("order pending ")}
+                    title={t("orders pending")}
                     value={summary?.waitingForOffersOrders ?? 0}
                     icon={<PendingActionsIcon />}
                 />

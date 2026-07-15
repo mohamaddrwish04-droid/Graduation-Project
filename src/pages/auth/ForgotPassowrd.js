@@ -23,8 +23,6 @@ function ForgotPassword() {
 
     return (
         <Box id="Box-container">
-            {/* Right Side */}
-
             <Box id="right-side"
                 sx={{p: 4,}}
             >
@@ -66,7 +64,7 @@ function ForgotPassword() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <EmailIcon />
+                                        <EmailIcon color="primary" />
                                     </InputAdornment>
                                 ),
                             },

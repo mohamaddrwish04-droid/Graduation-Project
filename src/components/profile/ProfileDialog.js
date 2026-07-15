@@ -13,39 +13,53 @@ import { buildImageUrl } from "../../utils/buildImageUrl"
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "../../services/profileService";
 import { uploadProfileImage, } from "../../services/profileService";
+import { useAuth } from "../../context/AuthContext";
+
+
 export default function ProfileDialog({
     open,
     onClose,
-    User,
+    user,
 }) {
 
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [success, setSuccess] = useState("");
-     const [user, setUser] = useState(null);
+    const { updateUser } = useAuth();
+
 
     const handleUploadImage = async () => {
 
-        if (!selectedFile) {
-            return;
-        }
+        if (!selectedFile) return;
 
         try {
 
             setUploading(true);
-            await uploadProfileImage(selectedFile);
-            const updatedUser = await getCurrentUser();
-            setUser(updatedUser);
+
+            await uploadProfileImage(
+                selectedFile
+            );
+
+            const updatedUser =
+                await getCurrentUser();
+
+            updateUser(updatedUser);
+
             setSelectedFile(null);
+
             setSuccess(
                 "تم رفع الصورة بنجاح"
             );
-        } catch (error) {
+
+        } catch {
+
             setError(
                 "فشل رفع الصورة"
             );
+
         } finally {
+
             setUploading(false);
         }
     };

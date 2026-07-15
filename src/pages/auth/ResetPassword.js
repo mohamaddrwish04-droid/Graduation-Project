@@ -40,7 +40,7 @@ function ResetPassword() {
             >
                 <Paper id="paper"
                     elevation={0}
-                    sx={{ p: 5, }}
+                    sx={{ p: 4, }}
                 >
                     <Typography
                         variant="h4"
@@ -55,7 +55,7 @@ function ResetPassword() {
                         textAlign="center"
                         sx={{
                             mt: 1,
-                            mb: 4,
+                            mb: 2,
                         }}
                     >
                         تم إرسال رمز التحقق إلى
@@ -64,7 +64,7 @@ function ResetPassword() {
                     <Typography
                         textAlign="center"
                         fontWeight="bold"
-                        sx={{ mb: 4 }}
+                        sx={{ mb: 3 }}
                     >
                         {email}
                     </Typography>
@@ -83,7 +83,7 @@ function ResetPassword() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <KeyIcon />
+                                        <KeyIcon color="primary" />
                                     </InputAdornment>
                                 ),
                             },
@@ -109,7 +109,7 @@ function ResetPassword() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <LockIcon />
+                                        <LockIcon color="primary" />
                                     </InputAdornment>
                                 ),
                                 endAdornment: (

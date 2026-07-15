@@ -28,8 +28,15 @@ import IconButton from "@mui/material/IconButton";
 import { useTranslation } from "react-i18next";
 import { useThemeContext } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
-
+import { Select, FormControl } from "@mui/material"
 import "./layout.css";
+import {
+  subscriptionPaymentRequestsPending,
+} from "../../services/subscriptionService";
+
+
+
+
 
 export default function Topbar() {
 
@@ -42,10 +49,22 @@ export default function Topbar() {
   const [dateTime, setDateTime] = useState(new Date());
   const [anchorEl, setAnchorEl] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [passwordOpen, setPasswordOpen] =useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [requests, setRequests] = useState([]);
 
   const open = Boolean(anchorEl);
 
+  useEffect(() => {
+    loadData();
+  }, []);
+  const loadData = async () => {
+    try {
+      const requestsData = await subscriptionPaymentRequestsPending();
+      setRequests(requestsData.items);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -86,7 +105,7 @@ export default function Topbar() {
         }}
       >
         <Badge
-          badgeContent={3}
+          badgeContent={requests.length}
           color="error"
         >
           <NotificationsIcon id="notification-icon" />
@@ -99,20 +118,24 @@ export default function Topbar() {
           {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
         </IconButton>
 
-        <Button
-          variant="contained"
-          onClick={() =>
-            changeLanguage(
-              language === "ar"
-                ? "en"
-                : "ar"
-            )
-          }
-        >
-          {language === "ar"
-            ? "English"
-            : "العربية"}
-        </Button>
+        <FormControl size="small">
+          <Select
+            value={language}
+            onChange={(e) =>
+              changeLanguage(
+                e.target.value
+              )
+            }
+          >
+            <MenuItem value="ar">
+              🇸🇦 العربية
+            </MenuItem>
+
+            <MenuItem value="en">
+              🇺🇸 English
+            </MenuItem>
+          </Select>
+        </FormControl>
 
 
 
@@ -189,7 +212,7 @@ export default function Topbar() {
               <PersonIcon fontSize="small" />
             </ListItemIcon>
 
-            عرض البروفايل
+           {t("view profile")}
           </MenuItem>
 
           <MenuItem
@@ -202,7 +225,7 @@ export default function Topbar() {
               <LockResetIcon fontSize="small" />
             </ListItemIcon>
 
-            تغيير كلمة المرور
+           {t("reset password")}
           </MenuItem>
 
           <MenuItem
@@ -215,7 +238,7 @@ export default function Topbar() {
               <LogoutIcon fontSize="small" />
             </ListItemIcon>
 
-           تسجيل الخروج
+           {t("logout")}
           </MenuItem>
         </Menu>
 

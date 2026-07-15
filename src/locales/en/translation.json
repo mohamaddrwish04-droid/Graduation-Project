@@ -68,5 +68,7 @@
     "manage subscription requests":"Manage Subscription Requests",
     "disc-subscription-requests":"Manage available subscription requests and manage their status.",
     "manage ratings":"Manage Ratings",
-    "disc-ratings":"View and manage all ratings provided by users."
+    "disc-ratings":"View and manage all ratings provided by users.",
+    "reset password":"Reset Password",
+    "view profile":"View Profile"
 }

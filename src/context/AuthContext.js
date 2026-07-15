@@ -50,11 +50,19 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
     };
+    const updateUser = (newUserData) => {
+        setUser(newUserData);
+        localStorage.setItem(
+            "user",
+            JSON.stringify(newUserData)
+        );
+    };
 
     const value = {
         user,
         login,
         logout,
+        updateUser,
         isAuthenticated:
             !!localStorage.getItem("accessToken"),
     };
