@@ -53,10 +53,6 @@ export default function SubscriptionPage() {
             header: t("plans"),
         },
         {
-            field: "amount",
-            header: t("amount"),
-        },
-        {
             field: "paymentMethod",
             header: t("payment method"),
         },
@@ -105,11 +101,10 @@ export default function SubscriptionPage() {
 
 
             <Tooltip title="رقم العملية">
-
                 <IconButton
                     color="primary"
-                    onClick={() =>
-                        handleShowTransaction(row)
+                    onClick={(e) =>
+                        handleShowTransaction(e.transactionId)
                     }
                 >
                     <KeyIcon />
@@ -278,23 +273,14 @@ export default function SubscriptionPage() {
                     setOpenTransactionDialog(false)
                 }
             >
-
                 <DialogTitle>
-
                     رقم العملية
-
                 </DialogTitle>
-
                 <DialogContent>
-
                     <Typography>
-
-                        {selectedRequest?.transactionId}
-
+                        {selectedRequest}
                     </Typography>
-
                 </DialogContent>
-
             </Dialog>
 
             <Dialog
@@ -303,26 +289,17 @@ export default function SubscriptionPage() {
                     setOpenReasonDialog(false)
                 }
             >
-
                 <DialogTitle>
-
                     سبب الرفض
-
                 </DialogTitle>
-
                 <DialogContent>
-
                     <Typography>
-
                         {
                             selectedRequest?.adminNote ||
                             "لا يوجد سبب"
                         }
-
                     </Typography>
-
                 </DialogContent>
-
             </Dialog>
 
             <Dialog

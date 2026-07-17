@@ -3,14 +3,12 @@ import i18n from "../i18n";
 
 const LanguageContext = createContext();
 
-export const LanguageProvider = ({ children }) => {
+export const LanguageProvider = ({ children }) => { 
     const [language, setLanguage] = useState(
         localStorage.getItem("language") || "ar"
     );
-    useEffect(() => {
-        document.documentElement.lang =
-            language;
-
+    useEffect(() => { 
+        document.documentElement.lang = language;
         document.documentElement.dir =
             language === "ar"
                 ? "rtl"

@@ -157,15 +157,17 @@ export function useSubscriptionPlanPage() {
         (plan) => !plan.isActive
     ).length;
 
-    const averagePrice = totalPlans > 0
-        ? (
-            plans.reduce(
-                (sum, plan) =>
-                    sum + plan.price,
-                0
-            ) / totalPlans
-        ).toFixed(2)
-        : 0;
+    const averagePrice = parseInt(
+        totalPlans > 0
+            ? (
+                plans.reduce(
+                    (sum, plan) =>
+                        sum + plan.price,
+                    0
+                ) / totalPlans
+            ).toFixed(2)
+            : 0
+    )
 
 
     return {

@@ -25,8 +25,7 @@ export function AuthProvider({ children }) {
 
         const userData = {
             accessToken: authData.accessToken,
-            refreshToken: authData.refreshToken,
-
+            refreshToken: authData.refreshToken,  
             userId: currentUser.userId,
             fullName: currentUser.fullName,
             email: currentUser.email,
@@ -36,7 +35,6 @@ export function AuthProvider({ children }) {
         };
 
         setUser(userData);
-
         localStorage.setItem(
             "user",
             JSON.stringify(userData)

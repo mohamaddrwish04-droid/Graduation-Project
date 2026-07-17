@@ -26,11 +26,11 @@ function RatingsPage() {
             header: t("customer"),
         },
         {
-            field: "providerName",
+            field: "selectedProviderName",
             header: t("provider"),
         },
         {
-            field: "specializtionName",
+            field: "specializationName",
             header: t("specialization"),
         },
         {

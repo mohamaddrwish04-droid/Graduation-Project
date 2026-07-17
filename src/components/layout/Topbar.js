@@ -56,6 +56,7 @@ export default function Topbar() {
 
   useEffect(() => {
     loadData();
+    console.log(language);
   }, []);
   const loadData = async () => {
     try {
@@ -87,8 +88,8 @@ export default function Topbar() {
     navigate("/");
   };
 
-  const currentTime = dateTime.toLocaleTimeString("ar-EG");
-  const currentDate = dateTime.toLocaleDateString("ar-EG");
+  const currentTime = dateTime.toLocaleTimeString(`${language}-EG`);
+  const currentDate = dateTime.toLocaleDateString(`${language}-EG`);
 
   return (
     <Box id="topbar"

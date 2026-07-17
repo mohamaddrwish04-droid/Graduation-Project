@@ -55,55 +55,28 @@ export function HelperTable() {
                 case 0:
                     return (
                         <Chip
-                            label="بانتظار العروض"
+                            label="بانتظار "
                             color="info"
                             size="small"
-                            sx={{ minWidth: 120, fontWeight: 600 }}
+                            sx={{ minWidth: 100, fontWeight: 600 }}
                         />
                     );
                 case 1:
                     return (
                         <Chip
-                            label="تمت المعاينة"
-                            color="warning"
+                            label="مقبول"
+                            color="success"
                             size="small"
-                            sx={{ minWidth: 120, fontWeight: 600 }}
+                            sx={{ minWidth: 100, fontWeight: 600 }}
                         />
                     );
                 case 2:
                     return (
                         <Chip
-                            label="قيد التنفيذ"
-                            color="primary"
-                            size="small"
-                            sx={{ minWidth: 120, fontWeight: 600 }}
-                        />
-                    );
-                case 3:
-                    return (
-                        <Chip
-                            label="بانتظار تأكيد الإنجاز"
-                            color="secondary"
-                            size="small"
-                            sx={{ minWidth: 120, fontWeight: 600 }}
-                        />
-                    );
-                case 4:
-                    return (
-                        <Chip
-                            label="مكتمل"
-                            color="success"
-                            size="small"
-                            sx={{ minWidth: 120, fontWeight: 600 }}
-                        />
-                    );
-                case 5:
-                    return (
-                        <Chip
                             label="ملغي"
                             color="error"
                             size="small"
-                            sx={{ minWidth: 120, fontWeight: 600 }}
+                            sx={{ minWidth: 100, fontWeight: 600 }}
                         />
                     );
                 default:
@@ -112,7 +85,7 @@ export function HelperTable() {
                             label="غير معروف"
                             color="default"
                             size="small"
-                            sx={{ minWidth: 120, fontWeight: 600 }}
+                            sx={{ minWidth: 100, fontWeight: 600 }}
                         />
                     );
             }
@@ -120,7 +93,7 @@ export function HelperTable() {
 
         if (column.field === "paymentMethod") {
             switch (row.paymentMethod) {
-                case 1:
+                case 0:
                     return "شام كاش";
                 default:
                     return "غير معروف";

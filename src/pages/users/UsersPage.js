@@ -52,10 +52,6 @@ export default function UsersPage() {
             field: "isEmailVerified",
             header: t("status"),
         },
-        {
-            field: "createdAt",
-            header: t("created at"),
-        },
     ];
 
     return (

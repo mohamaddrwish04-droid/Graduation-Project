@@ -104,8 +104,8 @@ export function useSubscriptionPage() {
             console.log(error);
         }
     };
-    const handleShowTransaction = (row) => {
-        setSelectedRequest(row);
+    const handleShowTransaction = (transactionId) => {
+        setSelectedRequest(transactionId);
         setOpenTransactionDialog(true);
     };
     const handleShowReason = (row) => {
